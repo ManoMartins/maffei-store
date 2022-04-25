@@ -1,9 +1,9 @@
-import { Button } from './components/UI/atoms/Button'
+import { FieldText } from '../components/UI/atoms/FieldText'
 
 export default function Home() {
   return (
     <div>
-      <Button label='button' variant='ghost' />
+      <FieldText label='button' name='button' />
     </div>
   )
 }
