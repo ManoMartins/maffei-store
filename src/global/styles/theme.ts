@@ -32,6 +32,11 @@ export default {
       500: '#E83F5B',
     },
 
-    white: '#FAFAFA'
+    white: '#FAFAFA',
+
+    black: {
+      100: '#F3F3F4',
+      500: '#444444',
+    }
   }
 }
