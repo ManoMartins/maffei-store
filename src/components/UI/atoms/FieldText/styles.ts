@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
 export const Content = styled.input`
-  height: 2.25rem;
+  height: 2.5rem;
   padding: 0rem 0.5rem;
   border-radius: 0.5rem;
   
