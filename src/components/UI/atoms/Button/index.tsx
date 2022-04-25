@@ -3,10 +3,10 @@ import * as S from './styles';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
-  variant: keyof typeof S.ButtonVariant;
+  variant?: keyof typeof S.ButtonVariant;
 }
 
-export const Button = ({ label, variant, ...rest }: ButtonProps) => {
+export const Button = ({ label, variant = 'solid', ...rest }: ButtonProps) => {
   return (
     <S.Container variant={variant} {...rest}>
       {label}
