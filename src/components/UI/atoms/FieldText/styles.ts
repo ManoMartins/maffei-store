@@ -25,6 +25,7 @@ export const Content = styled.input`
 
 export const Label = styled.label`
   font-weight: 500;
+  font-size: 0.875rem;
   margin-bottom: 0.25rem;
   color: ${props => props.theme.colors.black[500]};
 `

@@ -7,6 +7,10 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+
   html {
     @media (max-width: 1080px) {
       font-size: 93.75%;

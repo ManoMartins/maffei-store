@@ -16,15 +16,14 @@ export const Content = styled.div`
   margin: 0 auto;
 
   > div + div {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
   }
 `
 
 export const Title = styled.h1`
-  width: 500px;
   font-size: 1.75rem;
   margin-bottom: 11.25rem;
-  color: ${props => props.theme.colors.purple[900]};
+  color: ${props => props.theme.colors.yellow[900]};
 `
 
 export const SectionTitle = styled.h1`
@@ -36,7 +35,7 @@ export const SectionTitle = styled.h1`
 export const CoverContainer = styled.div`
   width: 40%;
   padding: 0 5rem;
-  background-color: ${props => props.theme.colors.purple[100]};
+  background-color: ${props => props.theme.colors.yellow[400]};
   
   display: flex;
   align-items: center;
@@ -47,4 +46,10 @@ export const CoverContainer = styled.div`
 export const Cover = styled(Image)`
   width: 408px;
   height: 279px;
+`
+
+export const FieldGroup = styled.div`
+  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 12.25rem 12.25rem;
 `

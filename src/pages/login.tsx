@@ -11,9 +11,9 @@ export default function Login() {
         <S.Title>Conheça um novo mundo para realização de compras de jogos</S.Title>
 
         <S.Cover 
-          width="408px"
-          height= "279px" 
-          src="/assets/video_games.svg"
+          width="500px"
+          height= "336px" 
+          src="/assets/video_game.svg"
         />
       </S.CoverContainer>
 
