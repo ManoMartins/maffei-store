@@ -3,10 +3,10 @@ import { Autoplay, Pagination } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import { Header } from "../../components/UI/molecules/Header";
+import { Header } from "../../UI/molecules/Header";
 import * as S from './styles';
 import Image from "next/image";
-import { Section } from "../../components/UI/atoms/Section";
+import { Section } from "../../UI/atoms/Section";
 
 export const Home = () => {
   return (
