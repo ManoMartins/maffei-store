@@ -1,9 +1,7 @@
-import { FieldText } from '../components/UI/atoms/FieldText'
+import { Home } from "../templates/Home";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div>
-      <FieldText label='button' name='button' />
-    </div>
+    <Home />
   )
 }

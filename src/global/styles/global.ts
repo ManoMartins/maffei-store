@@ -9,6 +9,8 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Inter', sans-serif;
+    color: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.black[500]};
   }
 
   html {
@@ -22,6 +24,11 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   button: {
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
     cursor: pointer;
   }
 `
