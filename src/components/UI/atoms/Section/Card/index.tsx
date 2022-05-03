@@ -4,8 +4,11 @@ import { Button } from '../../Button';
 import { FaPlaystation, FaSteam, FaXbox } from 'react-icons/fa'
 
 import * as S from './styles';
+import { useCart } from '../../../../../contexts/cart';
 
 export const SectionCard = () => {
+  const { addProduct } = useCart()
+  
   return (
     <S.Container href="/games/little-nightmares-2">
       <S.Content>
@@ -31,7 +34,10 @@ export const SectionCard = () => {
               R$ 100,00
             </S.Price>
 
-            <Button label='Comprar' />
+            <Button onClick={(e) => {
+              e.stopPropagation()
+              addProduct('teste')
+            }} label='Comprar' />
           </S.Footer>
         </S.Details>
       </S.Content>
