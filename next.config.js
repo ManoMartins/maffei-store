@@ -5,7 +5,8 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['store-images.s-microsoft.com', 'images.alphacoders.com', 'images.wallpapersden.com', 'images.expothemes.com'],
+    domains: ['cdn.cloudflare.steamstatic.com'],
+    hostname: 'cdn.cloudflare.steamstatic.com',
   },
 }
 
