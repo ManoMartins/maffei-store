@@ -28,7 +28,8 @@ export default function Games({ games, isLoading }: IGamesProps) {
 
             {!hasGames && <GameBlank />}
 
-            {hasGames && games.map(game => <GameItem game={game} />)}
+            {hasGames &&
+              games.map(game => <GameItem key={game.id} game={game} />)}
           </SimpleGrid>
         </Stack>
       </Flex>
