@@ -16,7 +16,7 @@ export default function CartItem() {
       event.preventDefault();
       removeProduct(productId);
     },
-    [],
+    [removeProduct],
   );
 
   return (

@@ -1,6 +1,9 @@
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
-import { useCart } from 'contexts/cart';
 import { MouseEvent, useCallback } from 'react';
+
+import { useCart } from 'contexts/cart';
+
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
+
 import { IGame } from 'types/IGame';
 
 interface IHeroSectionItemProps {
@@ -11,12 +14,12 @@ export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
+    (event: MouseEvent<HTMLButtonElement>, newGame: IGame) => {
       event.preventDefault();
 
-      addProduct(productId);
+      addProduct(newGame);
     },
-    [],
+    [addProduct],
   );
 
   return (
@@ -54,7 +57,7 @@ export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
             bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
             transition="all 0.2s ease-in-out"
             _hover={{ filter: 'brightness(0.9)' }}
-            onClick={e => handleAddProduct(e, game.id)}
+            onClick={e => handleAddProduct(e, game)}
           >
             Comprar agora
           </Button>

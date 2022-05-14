@@ -16,7 +16,7 @@ export default function Footer() {
       event.preventDefault();
       router.push('/');
     },
-    [],
+    [router],
   );
 
   const handleOrder = useCallback((event: MouseEvent<HTMLButtonElement>) => {

@@ -1,16 +1,19 @@
-import Link from 'components/UI/atoms/Link';
-import { FiShoppingCart } from 'react-icons/fi';
-import { Badge, Box, Button, IconButton, Stack } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useCallback } from 'react';
+
 import { useCart } from 'contexts/cart';
 
+import Link from 'components/UI/atoms/Link';
+
+import { FiShoppingCart } from 'react-icons/fi';
+import { Badge, Box, Button, IconButton, Stack } from '@chakra-ui/react';
+
 export default function Header() {
-  const { disclosureMiniCart } = useCart();
+  const { cartLength, disclosureMiniCart } = useCart();
 
   const handleMiniCart = useCallback(() => {
     disclosureMiniCart.onOpen();
-  }, []);
+  }, [disclosureMiniCart]);
 
   return (
     <Stack
@@ -29,7 +32,7 @@ export default function Header() {
           src="/assets/logo.png"
         />
 
-        <Link label="Home" href="/" isActive />
+        <Link label="Home" href="/" />
 
         <Link label="Jogos" href="/games" />
       </Stack>
@@ -49,9 +52,11 @@ export default function Header() {
             }}
           />
 
-          <Badge top="-1" right="-1" position="absolute">
-            3
-          </Badge>
+          {cartLength > 0 && (
+            <Badge top="-1" right="-1" position="absolute">
+              {cartLength}
+            </Badge>
+          )}
         </Box>
 
         <Button

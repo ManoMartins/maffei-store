@@ -1,12 +1,16 @@
-import { useDisclosure } from '@chakra-ui/react';
-import MiniCart from 'components/UI/organisms/MiniCart';
-import {
+import React, {
   useMemo,
   useState,
   useContext,
   useCallback,
   createContext,
 } from 'react';
+
+import MiniCart from 'components/UI/organisms/MiniCart';
+
+import { useDisclosure } from '@chakra-ui/react';
+
+import { IGame } from 'types/IGame';
 import { CartContextProviderProps, CartContextValues, CartData } from './types';
 
 const CartContext = createContext<CartContextValues>({} as CartContextValues);
@@ -17,14 +21,52 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   // Product
-  const addProduct = useCallback((productId: string) => {
-    onOpen();
-    alert(`Adicionar produto ${productId}`);
-  }, []);
+  const addProduct = useCallback(
+    (game: IGame) => {
+      onOpen();
 
-  const removeProduct = useCallback((productId: string) => {
-    alert(`Remover produto ${productId}`);
-  }, []);
+      const oldCart = { ...cart };
+
+      const storeProducts = oldCart.storeProducts || [];
+
+      const product = storeProducts.find(p => p.id === game.id);
+
+      if (product) {
+        product.quantity += 1;
+      } else {
+        storeProducts.push({
+          ...game,
+          quantity: 1,
+        });
+      }
+
+      setCart({
+        ...oldCart,
+        storeProducts,
+      });
+    },
+    [cart, onOpen],
+  );
+
+  const removeProduct = useCallback(
+    (productId: string) => {
+      const oldCart = { ...cart };
+
+      const storeProducts = oldCart.storeProducts || [];
+
+      const product = storeProducts.find(p => p.id === productId);
+
+      if (product) {
+        storeProducts.splice(storeProducts.indexOf(product), 1);
+      }
+
+      setCart({
+        ...oldCart,
+        storeProducts,
+      });
+    },
+    [cart],
+  );
 
   const updateProductQuantity = useCallback((productId: string) => {
     alert(`Atualizar produto de quantidade ${productId}`);
@@ -52,8 +94,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     alert('Fazer pedido');
   }, []);
 
+  const cartLength = useMemo(() => {
+    const storeProducts = cart?.storeProducts || [];
+
+    return storeProducts.length;
+  }, [cart]);
+
   const values = useMemo(
     () => ({
+      cart,
+      cartLength,
+
       addProduct,
       removeProduct,
       updateProductQuantity,
@@ -72,12 +123,31 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         onClose,
       },
     }),
-    [],
+    [
+      cart,
+      addProduct,
+      removeProduct,
+      updateProductQuantity,
+      addCoupon,
+      removeCoupon,
+      addPaymentMethod,
+      removePaymentMethod,
+      makeOrder,
+      isOpen,
+      onOpen,
+      onClose,
+      cartLength,
+    ],
   );
 
   return (
     <CartContext.Provider value={values}>
-      <MiniCart isOpen={isOpen} onClose={onClose} />
+      <MiniCart
+        cart={cart}
+        isOpen={isOpen}
+        onClose={onClose}
+        onRemoveProduct={removeProduct}
+      />
       {children}
     </CartContext.Provider>
   );

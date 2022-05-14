@@ -4,10 +4,11 @@ import { useCallback, MouseEvent } from 'react';
 
 import { useCart } from 'contexts/cart';
 
+import formatCurrency from 'helpers/format/currency';
+
 import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 
 import { IGame } from 'types/IGame';
-import formatCurrency from 'helpers/format/currency';
 
 interface IGameItemProps {
   game: IGame;
@@ -17,12 +18,12 @@ export default function GameItem({ game }: IGameItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
+    (event: MouseEvent<HTMLButtonElement>, newGame: IGame) => {
       event.preventDefault();
 
-      addProduct(productId);
+      addProduct(newGame);
     },
-    [],
+    [addProduct],
   );
 
   return (
@@ -65,7 +66,7 @@ export default function GameItem({ game }: IGameItemProps) {
                   filter: 'brightness(0.9)',
                 }}
                 onClick={e => {
-                  handleAddProduct(e, game.id);
+                  handleAddProduct(e, game);
                 }}
               >
                 Comprar

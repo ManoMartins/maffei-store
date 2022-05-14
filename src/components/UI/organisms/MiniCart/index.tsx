@@ -1,30 +1,41 @@
+import { useCallback } from 'react';
+import { useRouter } from 'next/router';
+
+import MiniCartItem from 'components/UI/molecules/MiniCartItem';
+
+import { CartData } from 'contexts/cart/types';
+
 import {
+  Stack,
   Button,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  DrawerContent,
   DrawerOverlay,
-  Stack,
+  DrawerCloseButton,
 } from '@chakra-ui/react';
-import MiniCartItem from 'components/UI/molecules/MiniCartItem';
-import { useRouter } from 'next/router';
-import { useCallback } from 'react';
 
 interface IMiniCartProps {
+  cart?: CartData;
   isOpen: boolean;
   onClose: () => void;
+  onRemoveProduct: (productId: string) => void;
 }
 
-export default function MiniCart({ isOpen, onClose }: IMiniCartProps) {
+export default function MiniCart({
+  cart,
+  isOpen,
+  onClose,
+  onRemoveProduct,
+}: IMiniCartProps) {
   const router = useRouter();
 
   const handleFinishOrder = useCallback(() => {
     onClose();
     router.push('/cart');
-  }, []);
+  }, [onClose, router]);
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose}>
@@ -35,9 +46,13 @@ export default function MiniCart({ isOpen, onClose }: IMiniCartProps) {
 
         <DrawerBody>
           <Stack spacing="4">
-            <MiniCartItem />
-            <MiniCartItem />
-            <MiniCartItem />
+            {cart?.storeProducts.map(game => (
+              <MiniCartItem
+                key={game.id}
+                game={game}
+                onRemoveProduct={onRemoveProduct}
+              />
+            ))}
           </Stack>
         </DrawerBody>
 
