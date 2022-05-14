@@ -1,10 +1,19 @@
-import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
-import { useCart } from 'contexts/cart';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCallback, MouseEvent } from 'react';
 
-export default function GameItem() {
+import { useCart } from 'contexts/cart';
+
+import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
+
+import { IGame } from 'types/IGame';
+import formatCurrency from 'helpers/format/currency';
+
+interface IGameItemProps {
+  game: IGame;
+}
+
+export default function GameItem({ game }: IGameItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
@@ -17,7 +26,7 @@ export default function GameItem() {
   );
 
   return (
-    <Link href="/games/f1-22">
+    <Link href={`/games/${game.slug}`}>
       <a>
         <Box
           bgColor="whiteAlpha.900"
@@ -35,7 +44,7 @@ export default function GameItem() {
 
           <Stack spacing="4" px="4" py="2">
             <Heading color="blackAlpha.900" fontSize="lg">
-              F1 22
+              {game.name}
             </Heading>
 
             <Stack
@@ -44,7 +53,7 @@ export default function GameItem() {
               justifyContent="space-between"
             >
               <Text color="blackAlpha.900" fontSize="sm">
-                R$ 199,99
+                {formatCurrency(game.price)}
               </Text>
 
               <Button
@@ -56,7 +65,7 @@ export default function GameItem() {
                   filter: 'brightness(0.9)',
                 }}
                 onClick={e => {
-                  handleAddProduct(e, '1');
+                  handleAddProduct(e, game.id);
                 }}
               >
                 Comprar
