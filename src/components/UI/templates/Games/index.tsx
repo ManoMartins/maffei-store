@@ -26,7 +26,7 @@ export default function Games({ games, isLoading }: IGamesProps) {
           <SimpleGrid w="full" columns={4} gap={6}>
             {isLoading && <GameSkeleton />}
 
-            {!hasGames && <GameBlank />}
+            {!hasGames && !isLoading && <GameBlank />}
 
             {hasGames &&
               games.map(game => <GameItem key={game.id} game={game} />)}
