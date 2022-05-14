@@ -3,13 +3,18 @@ import { useCallback, MouseEvent } from 'react';
 
 import { Button, Flex, Heading, Text, TextProps } from '@chakra-ui/react';
 import { useCart } from 'contexts/cart';
+import { IGame } from 'types/IGame';
 
 enum DescriptionEnum {
   left = 'left',
   right = 'right',
 }
 
-export default function Banner() {
+interface IBannerProps {
+  game: IGame;
+}
+
+export default function Banner({ game }: IBannerProps) {
   const { addProduct } = useCart();
 
   const container = {
@@ -51,7 +56,7 @@ export default function Banner() {
   );
 
   return (
-    <Link href="/games/elder-ring">
+    <Link href={`/games/${game.slug}`}>
       <a>
         <Flex
           mx="auto"
@@ -68,12 +73,11 @@ export default function Banner() {
         >
           <Flex flexDirection="column" width="96" {...content.right}>
             <Heading fontSize="3xl" color="white">
-              Elder ring
+              {game.name}
             </Heading>
 
             <Text mt="1" mb="6" {...textAlign.right}>
-              O Elder Ring é um jogo de aventura para se divertir e aproveitar o
-              que o jogo tem a ofertar.
+              {game.summary}
             </Text>
 
             <Button
@@ -82,7 +86,7 @@ export default function Banner() {
               bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
               transition="all 0.2s ease-in-out"
               _hover={{ filter: 'brightness(0.9)' }}
-              onClick={e => handleAddProduct(e, '12')}
+              onClick={e => handleAddProduct(e, game.id)}
             >
               Comprar agora
             </Button>

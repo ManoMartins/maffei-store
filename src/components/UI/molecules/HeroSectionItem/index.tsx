@@ -1,8 +1,13 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { useCart } from 'contexts/cart';
 import { MouseEvent, useCallback } from 'react';
+import { IGame } from 'types/IGame';
 
-export default function HeroSectionItem() {
+interface IHeroSectionItemProps {
+  game: IGame;
+}
+
+export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
@@ -37,12 +42,9 @@ export default function HeroSectionItem() {
         pb="10"
       >
         <Box>
-          <Heading>Little Nightmares 2</Heading>
+          <Heading>{game.name}</Heading>
 
-          <Text mt="2">
-            Jogo o novo Little Nightmares 2, um jogo de aventura para se
-            divertir e aproveitar o que o jogo tem a ofertar.
-          </Text>
+          <Text mt="2">{game.summary}</Text>
         </Box>
 
         <Box>
@@ -52,7 +54,7 @@ export default function HeroSectionItem() {
             bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
             transition="all 0.2s ease-in-out"
             _hover={{ filter: 'brightness(0.9)' }}
-            onClick={e => handleAddProduct(e, '1')}
+            onClick={e => handleAddProduct(e, game.id)}
           >
             Comprar agora
           </Button>
