@@ -13,6 +13,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@types/swiper": "^6.0.0",
+    "axios": "^0.27.2",
     "chroma-js": "^2.4.2",
     "framer-motion": "^6",
     "next": "12.1.5",
