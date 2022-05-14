@@ -1,23 +1,40 @@
-import { Button, ButtonProps } from "@mui/material"
-import NextLink, { LinkProps } from 'next/link';
+import NextLink from 'next/link';
+import { Link as ChakraLink, LinkProps } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 interface ILinkProps extends LinkProps {
-  href: string
-  label: string
-  buttonProps?: ButtonProps
+  href: string;
+  label: string;
+  isActive?: boolean;
 }
+export default function Link({ href, label, ...rest }: ILinkProps) {
+  const { asPath } = useRouter();
 
-export const Link = ({ href, label, buttonProps, ...rest }: ILinkProps) => {
+  const isActive = asPath === href;
+
   return (
-    <NextLink href={href} passHref {...rest}>
-      <Button 
-        sx={{
-          textTransform: "capitalize",
+    <NextLink href={href}>
+      <ChakraLink
+        fontWeight="medium"
+        textDecoration="none"
+        _hover={{
+          color: 'primary.900',
+          textDecoration: 'none',
         }}
-        {...buttonProps}
+        _after={{
+          mt: '4px',
+          width: '98%',
+          height: '3px',
+          content: '""',
+          display: 'flex',
+          alignItems: 'center',
+          transition: 'opacity 0.2s',
+          backgroundColor: isActive ? 'primary.900' : '',
+        }}
+        {...rest}
       >
         {label}
-      </Button>
+      </ChakraLink>
     </NextLink>
-  )
+  );
 }

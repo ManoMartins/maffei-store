@@ -22,9 +22,8 @@
     "baseUrl": "./src",
     "paths": {
       "types/*": ["types/*"],
-      "organisms/*": ["components/UI/organisms/*"],
-      "atoms/*": ["components/UI/atoms/*"],
-      "templates/*": ["components/templates/*"]
+      "components/*": ["components/*"],
+      "context/*": ["context/*"]
     }
   },
   "include": [

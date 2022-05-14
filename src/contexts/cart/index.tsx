@@ -1,64 +1,89 @@
-import NextImage from "next/image";
-import { createContext, useCallback, useContext, useState } from "react";
-import { CartContextProviderProps, CartContextValues, CartData } from "./types";
+import { useDisclosure } from '@chakra-ui/react';
+import MiniCart from 'components/UI/organisms/MiniCart';
+import {
+  useMemo,
+  useState,
+  useContext,
+  useCallback,
+  createContext,
+} from 'react';
+import { CartContextProviderProps, CartContextValues, CartData } from './types';
 
-const CartContext = createContext<CartContextValues>({} as CartContextValues)
+const CartContext = createContext<CartContextValues>({} as CartContextValues);
 
-export const CartContextProvider = ({ 
-  children 
-}: CartContextProviderProps) => {
+export function CartContextProvider({ children }: CartContextProviderProps) {
+  const [cart, setCart] = useState<CartData | undefined>(undefined);
 
-  const [cart, setCart] = useState<CartData | undefined>(undefined)
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   // Product
   const addProduct = useCallback((productId: string) => {
-    console.log('Adicionar produto')
-  }, [])
+    onOpen();
+    alert(`Adicionar produto ${productId}`);
+  }, []);
 
   const removeProduct = useCallback((productId: string) => {
-    console.log('Remover produto')
-  }, [])
+    alert(`Remover produto ${productId}`);
+  }, []);
 
   const updateProductQuantity = useCallback((productId: string) => {
-    console.log('Atualizar produto de quantidade')
-  }, [])
+    alert(`Atualizar produto de quantidade ${productId}`);
+  }, []);
 
   // Coupon
   const addCoupon = useCallback((voucherCode: string) => {
-    console.log('Adicionar produto')
-  }, [])
+    alert(`Adicionar produto ${voucherCode}`);
+  }, []);
 
   const removeCoupon = useCallback((voucherCode: string) => {
-    console.log('Remover produto')
-  }, [])
+    alert(`Remover produto ${voucherCode}`);
+  }, []);
 
   // Payment method
   const addPaymentMethod = useCallback((paymentMethodId: string) => {
-    console.log('Adicionar produto')
-  }, [])
+    alert(`Adicionar produto ${paymentMethodId}`);
+  }, []);
 
   const removePaymentMethod = useCallback((paymentMethodId: string) => {
-    console.log('Remover produto')
-  }, [])
+    alert(`Remover produto ${paymentMethodId}`);
+  }, []);
 
-  return (
-    <CartContext.Provider value={{
+  const makeOrder = useCallback(() => {
+    alert('Fazer pedido');
+  }, []);
+
+  const values = useMemo(
+    () => ({
       addProduct,
       removeProduct,
       updateProductQuantity,
-      
+
       addCoupon,
       removeCoupon,
 
       addPaymentMethod,
       removePaymentMethod,
-    }}>
+
+      makeOrder,
+
+      disclosureMiniCart: {
+        isOpen,
+        onOpen,
+        onClose,
+      },
+    }),
+    [],
+  );
+
+  return (
+    <CartContext.Provider value={values}>
+      <MiniCart isOpen={isOpen} onClose={onClose} />
       {children}
     </CartContext.Provider>
-  )
+  );
 }
 
 export function useCart() {
-  const context = useContext(CartContext)
-  return context
+  const context = useContext(CartContext);
+  return context;
 }
