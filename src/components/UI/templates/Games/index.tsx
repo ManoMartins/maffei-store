@@ -1,9 +1,20 @@
-import { Box, Flex, SimpleGrid, Stack } from '@chakra-ui/react';
-import FieldSearch from 'components/UI/atoms/FieldSearch';
-import GameItem from 'components/UI/molecules/GameItem';
 import Desktop from 'layout/desktop';
+import { Box, Flex, SimpleGrid, Stack } from '@chakra-ui/react';
 
-export default function Games() {
+import GameItem from 'components/UI/molecules/GameItem';
+import FieldSearch from 'components/UI/atoms/FieldSearch';
+import { IGame } from 'types/IGame';
+import GameSkeleton from './GameSkeleton';
+import GameBlank from './GameBlank';
+
+interface IGamesProps {
+  games?: IGame[];
+  isLoading: boolean;
+}
+
+export default function Games({ games, isLoading }: IGamesProps) {
+  const hasGames = games?.length > 0;
+
   return (
     <Desktop>
       <Flex justifyContent="space-between">
@@ -12,15 +23,12 @@ export default function Games() {
         <Stack maxW="940px" spacing="4">
           <FieldSearch inputGroupProps={{ maxW: '458px' }} />
 
-          <SimpleGrid columns={4} gap={6}>
-            <GameItem />
-            <GameItem />
-            <GameItem />
-            <GameItem />
-            <GameItem />
-            <GameItem />
-            <GameItem />
-            <GameItem />
+          <SimpleGrid w="full" columns={4} gap={6}>
+            {isLoading && <GameSkeleton />}
+
+            {!hasGames && <GameBlank />}
+
+            {hasGames && games.map(game => <GameItem game={game} />)}
           </SimpleGrid>
         </Stack>
       </Flex>
