@@ -99,7 +99,7 @@ export const AuthContextProvider = ({
           data: { access_token: accessToken, id, name },
         } = apiResponse;
 
-        setUser(user);
+        setUser({ id, name });
         api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
         setAuthDataToCookie({ accessToken, userData: { id, name } });
@@ -122,7 +122,7 @@ export const AuthContextProvider = ({
         setIsLoading(false);
       }
     },
-    [user, setAuthDataToCookie, router, toast],
+    [setAuthDataToCookie, router, toast],
   );
 
   const signOut = useCallback(async () => {

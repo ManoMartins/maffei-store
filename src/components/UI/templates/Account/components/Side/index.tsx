@@ -1,8 +1,21 @@
+import { useAuth } from 'contexts/auth';
+
+import Button from 'components/UI/atoms/Button';
+
+import {
+  FiUser,
+  FiLogOut,
+  FiMapPin,
+  FiCreditCard,
+  FiShoppingBag,
+} from 'react-icons/fi';
 import { Box } from '@chakra-ui/react';
-import { FiCreditCard, FiMapPin, FiShoppingBag, FiUser } from 'react-icons/fi';
+
 import SideButton from '../SideButton';
 
 export default function Side() {
+  const { signOut } = useAuth();
+
   return (
     <Box minW="322px">
       <SideButton href="/account/profile" icon={FiUser} title="Meu perfil" />
@@ -21,6 +34,15 @@ export default function Side() {
         icon={FiMapPin}
         title="Meus endereços"
       />
+      <Button
+        w="full"
+        h="56px"
+        onClick={signOut}
+        leftIcon={<FiLogOut />}
+        justifyContent="flex-start"
+      >
+        Sair
+      </Button>
     </Box>
   );
 }

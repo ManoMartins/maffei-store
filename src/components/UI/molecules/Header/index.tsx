@@ -7,8 +7,10 @@ import Link from 'components/UI/atoms/Link';
 
 import { FiShoppingCart } from 'react-icons/fi';
 import { Badge, Box, Button, IconButton, Stack } from '@chakra-ui/react';
+import { useAuth } from 'contexts/auth';
 
 export default function Header() {
+  const { user, isAuthenticated } = useAuth();
   const { cartLength, disclosureMiniCart } = useCart();
 
   const handleMiniCart = useCallback(() => {
@@ -59,16 +61,29 @@ export default function Header() {
           )}
         </Box>
 
-        <Button
-          as={Link}
-          color="white"
-          label="Entrar"
-          href="/sign-in"
-          borderRadius="2"
-          bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
-          transition="all 0.2s ease-in-out"
-          _hover={{ filter: 'brightness(0.9)', color: 'white' }}
-        />
+        {isAuthenticated ? (
+          <Button
+            as={Link}
+            color="white"
+            label={`Olá, ${user.name}`}
+            href="/account/profile"
+            borderRadius="2"
+            bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
+            transition="all 0.2s ease-in-out"
+            _hover={{ filter: 'brightness(0.9)', color: 'white' }}
+          />
+        ) : (
+          <Button
+            as={Link}
+            color="white"
+            label="Entrar"
+            href="/sign-in"
+            borderRadius="2"
+            bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
+            transition="all 0.2s ease-in-out"
+            _hover={{ filter: 'brightness(0.9)', color: 'white' }}
+          />
+        )}
       </Stack>
     </Stack>
   );
