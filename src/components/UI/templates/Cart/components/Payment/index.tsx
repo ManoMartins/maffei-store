@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   Box,
   Text,
@@ -7,35 +9,37 @@ import {
   useRadioGroup,
   useDisclosure,
 } from '@chakra-ui/react';
-import { FaCcMastercard, FaCcVisa, FaPlus } from 'react-icons/fa';
+import { FaCcVisa, FaPlus } from 'react-icons/fa';
 
 import Title from 'components/UI/atoms/Title';
 import ModalCard from 'components/UI/organisms/Modals/ModalCard';
+
 import PaymentCard from './PaymentCard';
 
-export default function Payment() {
+interface CreditCard {
+  id: string;
+  brand: string;
+  lastDigits: string;
+}
+
+interface IPaymentProps {
+  creditCards: CreditCard[];
+}
+
+export default function Payment({ creditCards }: IPaymentProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const options = [
-    {
-      value: '1',
+  const options = useMemo(() => {
+    return creditCards.map(creditCard => ({
+      value: creditCard.id,
       label: (
         <HStack>
           <FaCcVisa />
-          <Text>**** **** **** 1234</Text>
+          <Text>**** **** **** {creditCard.lastDigits}</Text>
         </HStack>
       ),
-    },
-    {
-      value: '2',
-      label: (
-        <HStack>
-          <FaCcMastercard />
-          <Text>**** **** **** 1234</Text>
-        </HStack>
-      ),
-    },
-  ];
+    }));
+  }, [creditCards]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'framework',

@@ -1,15 +1,16 @@
+import { useCallback } from 'react';
+
 import { FaCcMastercard } from 'react-icons/fa';
 import {
-  Button,
-  ButtonGroup,
   Flex,
-  HStack,
   Text,
+  Button,
+  HStack,
+  ButtonGroup,
   useDisclosure,
 } from '@chakra-ui/react';
 
 import ModalCard from 'components/UI/organisms/Modals/ModalCard';
-import { useCallback } from 'react';
 
 export default function CardItem() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -30,11 +31,11 @@ export default function CardItem() {
       <ButtonGroup>
         <Button
           size="sm"
+          borderRadius="2"
           variant="outline"
+          color="primary.900"
           colorScheme="blackAlpha"
           borderColor="primary.900"
-          color="primary.900"
-          borderRadius="2"
           onClick={onOpen}
         >
           Editar

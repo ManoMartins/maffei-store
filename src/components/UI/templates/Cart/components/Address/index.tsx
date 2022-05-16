@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   Box,
   Text,
@@ -12,28 +14,68 @@ import { FaHome, FaPlus } from 'react-icons/fa';
 
 import Title from 'components/UI/atoms/Title';
 import ModalAddress from 'components/UI/organisms/Modals/ModalAddress';
+
+import { IAddress } from 'types/IAddress';
+
 import AddressCard from './AddressCard';
 
-export default function Address() {
+interface IAaddressProps {
+  addresses: IAddress[];
+}
+
+export default function Address({ addresses }: IAaddressProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const options = [
-    {
-      value: '1',
-      label: (
-        <Stack>
-          <HStack>
-            <FaHome />
-            <Text>Casa</Text>
-          </HStack>
+  const options = useMemo(() => {
+    return addresses.map(address => {
+      const {
+        id,
+        city,
+        number,
+        state,
+        street,
+        zipCode,
+        complement,
+        addressType,
+        neighborhood,
+      } = address;
 
-          <Text>
-            Rua bandeirantes 1140, Jardim Revista, Suzano SP, 08694-180
-          </Text>
-        </Stack>
-      ),
-    },
-  ];
+      return {
+        value: id,
+        label: (
+          <Stack>
+            <HStack>
+              <FaHome />
+              <Text>{addressType}</Text>
+            </HStack>
+
+            <Text>
+              {street} {number}, {neighborhood}, {city} {state}, {zipCode}{' '}
+              {complement}
+            </Text>
+          </Stack>
+        ),
+      };
+    });
+  }, [addresses]);
+
+  // const options = [
+  //   {
+  //     value: '1',
+  //     label: (
+  //       <Stack>
+  //         <HStack>
+  //           <FaHome />
+  //           <Text>Casa</Text>
+  //         </HStack>
+
+  //         <Text>
+  //           Rua bandeirantes 1140, Jardim Revista, Suzano SP, 08694-180
+  //         </Text>
+  //       </Stack>
+  //     ),
+  //   },
+  // ];
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'framework',

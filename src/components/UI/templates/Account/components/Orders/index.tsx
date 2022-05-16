@@ -2,8 +2,8 @@ import { Stack } from '@chakra-ui/react';
 import Title from 'components/UI/atoms/Title';
 import AccountItem from 'components/UI/molecules/AccountItem';
 import Desktop from 'layout/desktop';
-import OrderItem from '../components/OrderItem';
-import Side from '../components/Side';
+import OrderItem from '../OrderItem';
+import Side from '../Side';
 
 export default function Orders() {
   return (

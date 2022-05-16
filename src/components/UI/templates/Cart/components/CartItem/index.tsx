@@ -2,19 +2,26 @@ import Image from 'next/image';
 import { MouseEvent, useCallback } from 'react';
 
 import { useCart } from 'contexts/cart';
+import { ICartGame } from 'contexts/cart/types';
 
 import { FiX } from 'react-icons/fi';
 import { Flex, Heading, IconButton, Text } from '@chakra-ui/react';
 
+import formatCurrency from 'helpers/format/currency';
+
 import Quantity from './Quantity';
 
-export default function CartItem() {
+interface ICartItemProps {
+  game: ICartGame;
+}
+
+export default function CartItem({ game }: ICartItemProps) {
   const { removeProduct } = useCart();
 
   const handleRemoveProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
+    (event: MouseEvent<HTMLButtonElement>, gameId: string) => {
       event.preventDefault();
-      removeProduct(productId);
+      removeProduct(gameId);
     },
     [removeProduct],
   );
@@ -32,7 +39,7 @@ export default function CartItem() {
       <Image
         width="217px"
         height="116px"
-        alt="Enden ring"
+        alt={game.name}
         objectFit="cover"
         src="https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg?t=1649774637"
       />
@@ -40,14 +47,14 @@ export default function CartItem() {
       <Flex py="2" justifyContent="space-between" ml="6" w="full">
         <Flex flexDirection="column" justifyContent="space-between">
           <Heading w="52" fontSize="xl">
-            Enden ring
+            {game.name}
           </Heading>
 
-          <Quantity />
+          <Quantity defaultValue={game.quantity} />
         </Flex>
 
         <Text alignSelf="end" w="36" fontWeight="bold">
-          R$ 199,99
+          {formatCurrency(game.price)}
         </Text>
       </Flex>
 
@@ -62,7 +69,7 @@ export default function CartItem() {
         _hover={{
           bgColor: 'blackAlpha.100',
         }}
-        onClick={e => handleRemoveProduct(e, '1245620')}
+        onClick={e => handleRemoveProduct(e, game.id)}
       />
     </Flex>
   );

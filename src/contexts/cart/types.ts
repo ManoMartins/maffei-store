@@ -1,8 +1,12 @@
 import React from 'react';
 import { IGame } from 'types/IGame';
 
+export interface ICartGame extends IGame {
+  quantity: number;
+}
+
 export type CartData = {
-  storeProducts: Array<IGame & { quantity: number }> | null;
+  storeProducts: Array<ICartGame> | null;
 
   storeCoupons: Array<{
     voucherCode: string;

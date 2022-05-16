@@ -6,7 +6,7 @@ import { Box, Button, SimpleGrid, Stack } from '@chakra-ui/react';
 import Title from 'components/UI/atoms/Title';
 import FieldInput from 'components/UI/atoms/FieldInput';
 import AccountItem from 'components/UI/molecules/AccountItem';
-import Side from '../components/Side';
+import Side from '../Side';
 
 export default function Profile() {
   const onSubmitProfile = useCallback(

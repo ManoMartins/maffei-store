@@ -7,9 +7,12 @@ import {
   NumberInputStepper,
   NumberDecrementStepper,
   NumberIncrementStepper,
+  NumberInputProps,
 } from '@chakra-ui/react';
 
-export default function Quantity() {
+type QuantityProps = NumberInputProps;
+
+export default function Quantity({ ...rest }: QuantityProps) {
   return (
     <FormControl>
       <Flex alignItems="center">
@@ -17,7 +20,7 @@ export default function Quantity() {
           Quantidade
         </Text>
 
-        <NumberInput ml="2" w="14" size="xs" variant="filled">
+        <NumberInput ml="2" w="14" size="xs" variant="filled" {...rest}>
           <NumberInputField
             borderRadius="2"
             borderColor="blackAlpha.100"

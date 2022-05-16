@@ -2,10 +2,10 @@ import { Divider, Stack } from '@chakra-ui/react';
 import Title from 'components/UI/atoms/Title';
 import AccountItem from 'components/UI/molecules/AccountItem';
 import Desktop from 'layout/desktop';
-import CardItem from '../components/CardItem';
-import Side from '../components/Side';
+import AddressItem from '../AddressItem';
+import Side from '../Side';
 
-export default function Cards() {
+export default function Addresses() {
   return (
     <Desktop>
       <Title>Minha conta</Title>
@@ -14,13 +14,13 @@ export default function Cards() {
         <Side />
 
         <Stack w="full" spacing="6">
-          <AccountItem title="Meus cartões">
+          <AccountItem title="Meus endereços">
             <Stack
               spacing="6"
               divider={<Divider borderColor="blackAlpha.500" />}
             >
-              <CardItem />
-              <CardItem />
+              <AddressItem />
+              <AddressItem />
             </Stack>
           </AccountItem>
         </Stack>
