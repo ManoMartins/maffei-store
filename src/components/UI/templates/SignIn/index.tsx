@@ -1,9 +1,45 @@
-import { Button, ButtonGroup, Flex, Heading, Stack } from '@chakra-ui/react';
-import FieldInput from 'components/UI/atoms/FieldInput';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+import api from 'services';
+
+import FieldInputRegister from 'components/UI/atoms/FormRHF/FieldInputRegister';
+
+import { Button, ButtonGroup, Flex, Heading, Stack } from '@chakra-ui/react';
+
+import schema from './schema';
+
+interface IFormData {
+  email: string;
+  password: string;
+}
 
 export default function SignIn() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormData>({
+    resolver: yupResolver(schema),
+  });
+
+  const { push } = useRouter();
+
+  const onSubmit: SubmitHandler<IFormData> = async data => {
+    try {
+      await api.post('/session', data);
+
+      push('/');
+    } catch (error) {
+      console.error(error);
+
+      alert('Falha no login');
+    }
+  };
+
   return (
     <Flex>
       <Flex
@@ -28,20 +64,33 @@ export default function SignIn() {
       </Flex>
 
       <Flex
+        as="form"
         width="60%"
         alignItems="center"
         flexDirection="column"
         color="blackAlpha.900"
         justifyContent="center"
         bgColor="whiteAlpha.900"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <Stack width="416px" spacing="4">
           <Heading mb="10" fontSize="2xl">
             Entre em Maffei
           </Heading>
 
-          <FieldInput label="E-mail" />
-          <FieldInput label="Senha" type="password" />
+          <FieldInputRegister
+            error={errors.email}
+            name="email"
+            label="E-mail"
+            register={register}
+          />
+          <FieldInputRegister
+            error={errors.password}
+            name="password"
+            label="Senha"
+            type="password"
+            register={register}
+          />
 
           <ButtonGroup justifyContent="space-between">
             <Link href="/sign-up">
@@ -60,14 +109,12 @@ export default function SignIn() {
             </Link>
 
             <Button
+              type="submit"
               borderRadius="2"
               color="whiteAlpha.900"
               transition="all 0.2s ease-in-out"
               _hover={{ filter: 'brightness(0.9)' }}
               bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
-              onClick={e => {
-                e.preventDefault();
-              }}
             >
               Entrar
             </Button>
