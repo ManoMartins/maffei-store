@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import api from 'services';
+import { useAuth } from 'contexts/auth';
 
 import FieldInputRegister from 'components/UI/atoms/FormRHF/FieldInputRegister';
 
@@ -12,7 +12,7 @@ import { Button, ButtonGroup, Flex, Heading, Stack } from '@chakra-ui/react';
 
 import schema from './schema';
 
-interface IFormData {
+export interface IFormSignIn {
   email: string;
   password: string;
 }
@@ -22,15 +22,16 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormData>({
+  } = useForm<IFormSignIn>({
     resolver: yupResolver(schema),
   });
 
+  const { signIn } = useAuth();
   const { push } = useRouter();
 
-  const onSubmit: SubmitHandler<IFormData> = async data => {
+  const onSubmit: SubmitHandler<IFormSignIn> = async data => {
     try {
-      await api.post('/session', data);
+      await signIn(data);
 
       push('/');
     } catch (error) {

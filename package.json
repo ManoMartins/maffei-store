@@ -18,12 +18,14 @@
     "chroma-js": "^2.4.2",
     "framer-motion": "^6",
     "next": "12.1.5",
+    "nookies": "^2.5.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.31.1",
     "react-icons": "^4.3.1",
     "react-input-mask": "^2.0.4",
     "swiper": "^7.4.1",
+    "lodash": "^4.17.21",
     "yup": "^0.32.11"
   },
   "devDependencies": {
