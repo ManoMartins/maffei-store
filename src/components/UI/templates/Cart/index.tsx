@@ -37,21 +37,7 @@ export default function Cart() {
             bgColor="#FFF"
             color="blackAlpha.900"
           >
-            <Address
-              addresses={[
-                {
-                  id: '1',
-                  city: 'São Paulo',
-                  number: '123',
-                  state: 'SP',
-                  street: 'Rua dos bobos',
-                  zipCode: '12345-678',
-                  complement: 'Casa',
-                  addressType: 'Casa',
-                  neighborhood: 'Centro',
-                },
-              ]}
-            />
+            <Address />
           </Stack>
 
           <Stack
@@ -62,9 +48,7 @@ export default function Cart() {
             bgColor="#FFF"
             color="blackAlpha.900"
           >
-            <Payment
-              creditCards={[{ brand: 'visa', id: '1', lastDigits: '2222' }]}
-            />
+            <Payment />
           </Stack>
 
           <Stack

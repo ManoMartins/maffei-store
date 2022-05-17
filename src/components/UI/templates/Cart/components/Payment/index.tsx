@@ -1,8 +1,12 @@
-import { useMemo } from 'react';
+import { get } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+
+import api from 'services';
 
 import {
   Box,
   Text,
+  Stack,
   VStack,
   Button,
   HStack,
@@ -12,22 +16,31 @@ import {
 import { FaCcVisa, FaPlus } from 'react-icons/fa';
 
 import Title from 'components/UI/atoms/Title';
+import Loader from 'components/UI/atoms/Loader';
 import ModalCard from 'components/UI/organisms/Modals/ModalCard';
+
+import { ICreditCard } from 'types/ICreditCard';
 
 import PaymentCard from './PaymentCard';
 
-interface CreditCard {
-  id: string;
-  brand: string;
-  lastDigits: string;
-}
-
-interface IPaymentProps {
-  creditCards: CreditCard[];
-}
-
-export default function Payment({ creditCards }: IPaymentProps) {
+export default function Payment() {
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const [creditCards, setCreditCards] = useState<ICreditCard[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const hasCreditCards = creditCards.length > 0;
+
+  useEffect(() => {
+    api
+      .get<ICreditCard[]>('/credit-card')
+      .then(response => {
+        setCreditCards(response.data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   const options = useMemo(() => {
     return creditCards.map(creditCard => ({
@@ -35,15 +48,15 @@ export default function Payment({ creditCards }: IPaymentProps) {
       label: (
         <HStack>
           <FaCcVisa />
-          <Text>**** **** **** {creditCard.lastDigits}</Text>
+          <Text>**** **** **** {creditCard.cardNumber.slice(12, 16)}</Text>
         </HStack>
       ),
     }));
   }, [creditCards]);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'framework',
-    defaultValue: 'react',
+    name: 'creditCardId',
+    defaultValue: get(creditCards, '0.id', ''),
     onChange: console.log,
   });
 
@@ -56,16 +69,32 @@ export default function Payment({ creditCards }: IPaymentProps) {
         Pagamentos
       </Title>
 
-      <VStack {...group}>
-        {options.map(value => {
-          const radio = getRadioProps({ value: value.value });
-          return (
-            <PaymentCard key={value} {...radio}>
-              {value.label}
-            </PaymentCard>
-          );
-        })}
-      </VStack>
+      {isLoading && (
+        <Box my="6">
+          <Loader />
+        </Box>
+      )}
+
+      {!hasCreditCards && !isLoading && (
+        <Stack>
+          <Text fontSize="sm" color="blackAlpha.500" my="2">
+            Você ainda não possui cartões de crédito.
+          </Text>
+        </Stack>
+      )}
+
+      {hasCreditCards && (
+        <VStack {...group}>
+          {options.map(value => {
+            const radio = getRadioProps({ value: value.value });
+            return (
+              <PaymentCard key={value} {...radio}>
+                {value.label}
+              </PaymentCard>
+            );
+          })}
+        </VStack>
+      )}
 
       <Button
         mt="2"
