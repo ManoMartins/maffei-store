@@ -1,34 +1,89 @@
+import { useCallback, useMemo, useState } from 'react';
+
+import api from 'services';
+
+import ModalAddress from 'components/UI/organisms/Modals/ModalAddress';
+
 import {
   Text,
-  Button,
   Flex,
-  HStack,
   Stack,
-  useDisclosure,
+  Button,
+  HStack,
   ButtonGroup,
+  useDisclosure,
 } from '@chakra-ui/react';
-import ModalAddress from 'components/UI/organisms/Modals/ModalAddress';
-import { useCallback } from 'react';
 import { FiHome } from 'react-icons/fi';
 
-export default function AddressItem() {
+import { IAddress } from 'types/IAddress';
+
+interface IAddressItemProps {
+  address: IAddress;
+}
+
+export default function AddressItem({ address }: IAddressItemProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const handleDelete = useCallback(() => {
-    alert('Delete address');
-  }, []);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const sanitizeAddress = useMemo(() => {
+    const {
+      id,
+      street,
+      streetType,
+      number,
+      complement,
+      neighborhood,
+      cityId,
+      stateId,
+      zipCode,
+    } = address;
+
+    return {
+      id,
+      street,
+      number,
+      cityId,
+      stateId,
+      zipCode,
+      complement,
+      streetType,
+      neighborhood,
+    };
+  }, [address]);
+
+  const handleDelete = useCallback(async () => {
+    try {
+      setIsDeleting(true);
+      await api.delete(`/address/${address.id}`);
+    } catch (error) {
+      console.error(error);
+
+      alert('Erro ao deletar endereço');
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [address.id]);
 
   return (
     <Flex justifyContent="space-between">
-      <ModalAddress isOpen={isOpen} onClose={onClose} />
+      <ModalAddress
+        isOpen={isOpen}
+        onClose={onClose}
+        defaultValues={sanitizeAddress}
+      />
 
       <Stack color="blackAlpha.900">
         <HStack>
           <FiHome />
-          <Text fontWeight="bold">Casa</Text>
+          <Text fontWeight="bold">{address.streetType}</Text>
         </HStack>
 
-        <Text>Rua bandeirantes 1140, Jardim Revista, Suzano SP, 08694-180</Text>
+        <Text>
+          {address.street} {address.number}, {address.neighborhood},{' '}
+          {address.city.name} {address.state.initials}, {address.zipCode}{' '}
+          {address.complement}
+        </Text>
       </Stack>
 
       <ButtonGroup>
@@ -49,6 +104,7 @@ export default function AddressItem() {
           variant="outline"
           colorScheme="red"
           borderRadius="2"
+          isLoading={isDeleting}
           onClick={handleDelete}
         >
           Deletar

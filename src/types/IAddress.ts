@@ -1,11 +1,16 @@
+import { ICity } from './ICity';
+import { IState } from './IState';
+
 export interface IAddress {
   id: string;
-  city: string;
-  state: string;
+  cityId: string;
+  stateId: string;
   street: string;
   number: string;
   zipCode: string;
   complement?: string;
-  addressType: string;
+  streetType: string;
   neighborhood: string;
+  city: Partial<ICity>;
+  state: Partial<IState>;
 }
