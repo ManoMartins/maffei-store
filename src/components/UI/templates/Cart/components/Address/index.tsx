@@ -1,4 +1,9 @@
-import { useMemo } from 'react';
+import { get } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+
+import api from 'services';
+
+import { useAuth } from 'contexts/auth';
 
 import {
   Box,
@@ -13,18 +18,35 @@ import {
 import { FaHome, FaPlus } from 'react-icons/fa';
 
 import Title from 'components/UI/atoms/Title';
+import Loader from 'components/UI/atoms/Loader';
 import ModalAddress from 'components/UI/organisms/Modals/ModalAddress';
 
 import { IAddress } from 'types/IAddress';
 
 import AddressCard from './AddressCard';
 
-interface IAaddressProps {
-  addresses: IAddress[];
-}
-
-export default function Address({ addresses }: IAaddressProps) {
+export default function Address() {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isAuthenticated } = useAuth();
+
+  const [addresses, setAddresses] = useState<IAddress[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const hasAddresses = addresses.length > 0;
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    setIsLoading(true);
+    api
+      .get('/address')
+      .then(response => {
+        setAddresses(response.data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [isAuthenticated]);
 
   const options = useMemo(() => {
     return addresses.map(address => {
@@ -36,7 +58,7 @@ export default function Address({ addresses }: IAaddressProps) {
         street,
         zipCode,
         complement,
-        addressType,
+        streetType,
         neighborhood,
       } = address;
 
@@ -46,12 +68,12 @@ export default function Address({ addresses }: IAaddressProps) {
           <Stack>
             <HStack>
               <FaHome />
-              <Text>{addressType}</Text>
+              <Text>{streetType}</Text>
             </HStack>
 
             <Text>
-              {street} {number}, {neighborhood}, {city} {state}, {zipCode}{' '}
-              {complement}
+              {street} {number}, {neighborhood}, {city.name} {state.initials},{' '}
+              {zipCode} {complement}
             </Text>
           </Stack>
         ),
@@ -59,27 +81,9 @@ export default function Address({ addresses }: IAaddressProps) {
     });
   }, [addresses]);
 
-  // const options = [
-  //   {
-  //     value: '1',
-  //     label: (
-  //       <Stack>
-  //         <HStack>
-  //           <FaHome />
-  //           <Text>Casa</Text>
-  //         </HStack>
-
-  //         <Text>
-  //           Rua bandeirantes 1140, Jardim Revista, Suzano SP, 08694-180
-  //         </Text>
-  //       </Stack>
-  //     ),
-  //   },
-  // ];
-
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'framework',
-    defaultValue: 'react',
+    name: 'addressId',
+    defaultValue: get(addresses, '[0].id', ''),
     onChange: console.log,
   });
 
@@ -93,16 +97,32 @@ export default function Address({ addresses }: IAaddressProps) {
         Endereços
       </Title>
 
-      <VStack {...group}>
-        {options.map(value => {
-          const radio = getRadioProps({ value: value.value });
-          return (
-            <AddressCard key={value} {...radio}>
-              {value.label}
-            </AddressCard>
-          );
-        })}
-      </VStack>
+      {isLoading && (
+        <Box my="6">
+          <Loader />
+        </Box>
+      )}
+
+      {!hasAddresses && !isLoading && (
+        <Stack>
+          <Text fontSize="sm" color="blackAlpha.500" my="2">
+            Você ainda não possui endereços.
+          </Text>
+        </Stack>
+      )}
+
+      {hasAddresses && (
+        <VStack {...group}>
+          {options.map(value => {
+            const radio = getRadioProps({ value: value.value });
+            return (
+              <AddressCard key={value} {...radio}>
+                {value.label}
+              </AddressCard>
+            );
+          })}
+        </VStack>
+      )}
 
       <Button
         mt="2"

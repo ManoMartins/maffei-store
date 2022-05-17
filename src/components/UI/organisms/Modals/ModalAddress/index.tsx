@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import api from 'services';
@@ -20,6 +21,8 @@ import {
 
 import { IState } from 'types/IState';
 import { ICity } from 'types/ICity';
+
+import schema from './schema';
 
 interface IFormAddress {
   street: string;
@@ -50,7 +53,9 @@ export default function ModalAddress({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<IFormAddress>();
+  } = useForm<IFormAddress>({
+    resolver: yupResolver(schema),
+  });
 
   const [selectState, setSelectState] = useState([]);
   const [selectCity, setSelectCity] = useState([]);
