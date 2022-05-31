@@ -8,6 +8,7 @@ import {
   FiMapPin,
   FiCreditCard,
   FiShoppingBag,
+  FiTag,
 } from 'react-icons/fi';
 import { Box } from '@chakra-ui/react';
 
@@ -24,6 +25,7 @@ export default function Side() {
         icon={FiShoppingBag}
         title="Meus pedidos"
       />
+      <SideButton href="/account/coupons" icon={FiTag} title="Meus cupons" />
       <SideButton
         href="/account/cards"
         icon={FiCreditCard}

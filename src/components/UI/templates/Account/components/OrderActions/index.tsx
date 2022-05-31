@@ -1,62 +1,92 @@
-import { ButtonGroup, Stack } from '@chakra-ui/react';
+import { ButtonGroup, Stack, useDisclosure } from '@chakra-ui/react';
 import Button from 'components/UI/atoms/Button';
 import { useCallback } from 'react';
+import { IOrderOnStoreProducts } from 'types/IOrder';
+import ModalCancelOrder from './ModalCancelOrder';
+import ModalExchangeOrder from './ModalExchangeOrder';
 
-export default function OrderActions() {
+interface IOrderActionsProps {
+  orderId: string;
+  orderOnStoreProducts: IOrderOnStoreProducts[];
+}
+
+export default function OrderActions({
+  orderId,
+  orderOnStoreProducts,
+}: IOrderActionsProps) {
+  const exchangeDisclosure = useDisclosure();
+  const cancelDisclosure = useDisclosure();
+
   const handleTrackOrder = useCallback(() => {
     alert('Follow');
   }, []);
 
-  const handleRequestExchange = useCallback(() => {
-    alert('Solicitar troca de pedido');
-  }, []);
+  const handleRequestExchange = useCallback(async () => {
+    exchangeDisclosure.onOpen();
+  }, [exchangeDisclosure]);
 
   const handleCancel = useCallback(() => {
-    alert('Cancelar pedido');
-  }, []);
+    cancelDisclosure.onOpen();
+  }, [cancelDisclosure]);
 
   return (
-    <ButtonGroup variant="outline" size="xs">
-      <Stack>
-        <Button
-          variantType="secondary"
-          color="primary"
-          borderColor="blackAlpha.400"
-          onClick={handleTrackOrder}
-          _hover={{
-            backgroundColor: 'blackAlpha.100',
-            borderColor: 'blackAlpha.500',
-          }}
-        >
-          Rastrear pedido
-        </Button>
+    <>
+      <ModalExchangeOrder
+        isOpen={exchangeDisclosure.isOpen}
+        onClose={exchangeDisclosure.onClose}
+        orderId={orderId}
+        orderOnStoreProducts={orderOnStoreProducts}
+      />
 
-        <Button
-          variantType="secondary"
-          color="primary"
-          borderColor="blackAlpha.400"
-          onClick={handleRequestExchange}
-          _hover={{
-            backgroundColor: 'blackAlpha.100',
-            borderColor: 'blackAlpha.500',
-          }}
-        >
-          Solicitar troca de item
-        </Button>
+      <ModalCancelOrder
+        isOpen={cancelDisclosure.isOpen}
+        onClose={cancelDisclosure.onClose}
+        orderId={orderId}
+        orderOnStoreProducts={orderOnStoreProducts}
+      />
 
-        <Button
-          variantType="secondary"
-          color="primary"
-          borderColor="blackAlpha.400"
-          onClick={handleCancel}
-          _hover={{
-            backgroundColor: 'blackAlpha.100',
-            borderColor: 'blackAlpha.500',
-          }}
-        >
-          Cancelar item
-        </Button>
-      </Stack>
-    </ButtonGroup>
+      <ButtonGroup variant="outline" size="xs">
+        <Stack>
+          <Button
+            variantType="secondary"
+            color="primary"
+            borderColor="blackAlpha.400"
+            onClick={handleTrackOrder}
+            _hover={{
+              backgroundColor: 'blackAlpha.100',
+              borderColor: 'blackAlpha.500',
+            }}
+          >
+            Rastrear pedido
+          </Button>
+
+          <Button
+            variantType="secondary"
+            color="primary"
+            borderColor="blackAlpha.400"
+            onClick={handleRequestExchange}
+            _hover={{
+              backgroundColor: 'blackAlpha.100',
+              borderColor: 'blackAlpha.500',
+            }}
+          >
+            Solicitar troca de item
+          </Button>
+
+          <Button
+            variantType="secondary"
+            color="primary"
+            borderColor="blackAlpha.400"
+            onClick={handleCancel}
+            _hover={{
+              backgroundColor: 'blackAlpha.100',
+              borderColor: 'blackAlpha.500',
+            }}
+          >
+            Cancelar item
+          </Button>
+        </Stack>
+      </ButtonGroup>
+    </>
   );
 }

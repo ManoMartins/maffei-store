@@ -1,11 +1,24 @@
 import { Box } from '@chakra-ui/react';
 import HeroSectionItem from 'components/UI/molecules/HeroSectionItem';
-import { IGame } from 'types/IGame';
+import { useMemo } from 'react';
+import { IStoreProduct } from 'types/IStoreProduct';
 
 interface IHeroSectionProps {
-  games?: IGame[];
+  storeProducts?: IStoreProduct[];
 }
 
-export default function HeroSection({ games }: IHeroSectionProps) {
-  return <Box>{games && <HeroSectionItem game={games[0]} />}</Box>;
+export default function HeroSection({ storeProducts }: IHeroSectionProps) {
+  const randomIndex = useMemo(() => {
+    if (!storeProducts) return 0;
+
+    return Math.floor(Math.random() * storeProducts.length);
+  }, [storeProducts]);
+
+  return (
+    <Box>
+      {storeProducts && (
+        <HeroSectionItem storeProduct={storeProducts[randomIndex]} />
+      )}
+    </Box>
+  );
 }

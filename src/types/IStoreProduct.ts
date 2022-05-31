@@ -7,7 +7,7 @@ export enum ProductStatus {
   DISABLED = 'DISABLED',
 }
 
-export interface IGame {
+export interface IStoreProduct {
   id: string;
   name: string;
   status?: ProductStatus;
@@ -20,4 +20,8 @@ export interface IGame {
   platforms: IPlatform[];
   companies: ICompany[];
   slug: string;
+  imageUri?: string;
+  imageFilename?: string;
+  imageMimetype?: string;
+  imageOriginalname?: string;
 }

@@ -4,30 +4,29 @@ import { useCallback, MouseEvent } from 'react';
 
 import { useCart } from 'contexts/cart';
 
-import formatCurrency from 'helpers/format/currency';
-
 import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
+import { FaEthereum } from 'react-icons/fa';
 
 interface IGameItemProps {
-  game: IGame;
+  storeProduct: IStoreProduct;
 }
 
-export default function GameItem({ game }: IGameItemProps) {
+export default function GameItem({ storeProduct }: IGameItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, newGame: IGame) => {
+    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
       event.preventDefault();
 
-      addProduct(newGame);
+      addProduct(productId);
     },
     [addProduct],
   );
 
   return (
-    <Link href={`/games/${game.slug}`}>
+    <Link href={`/games/${storeProduct.slug}`}>
       <a>
         <Box
           bgColor="whiteAlpha.900"
@@ -36,16 +35,16 @@ export default function GameItem({ game }: IGameItemProps) {
           borderRadius="2"
         >
           <Image
-            alt="F1 22"
             width="217px"
             height="116px"
             objectFit="cover"
-            src="https://cdn.cloudflare.steamstatic.com/steam/apps/1692250/header.jpg?t=1651741941"
+            alt={storeProduct.name}
+            src={storeProduct.imageUri}
           />
 
           <Stack spacing="4" px="4" py="2">
-            <Heading color="blackAlpha.900" fontSize="lg">
-              {game.name}
+            <Heading color="blackAlpha.900" fontSize="lg" isTruncated>
+              {storeProduct.name}
             </Heading>
 
             <Stack
@@ -53,8 +52,14 @@ export default function GameItem({ game }: IGameItemProps) {
               alignItems="center"
               justifyContent="space-between"
             >
-              <Text color="blackAlpha.900" fontSize="sm">
-                {formatCurrency(game.price)}
+              <Text
+                d="flex"
+                alignItems="center"
+                color="blackAlpha.900"
+                fontSize="sm"
+              >
+                <FaEthereum />
+                {storeProduct.price}
               </Text>
 
               <Button
@@ -66,7 +71,7 @@ export default function GameItem({ game }: IGameItemProps) {
                   filter: 'brightness(0.9)',
                 }}
                 onClick={e => {
-                  handleAddProduct(e, game);
+                  handleAddProduct(e, storeProduct.id);
                 }}
               >
                 Comprar

@@ -20,7 +20,10 @@ const schema = yup.object().shape({
 
   gender: yup.string().required('Gênero é obrigatório'),
 
-  birthDate: yup.date().required('Data de nascimento é obrigatório'),
+  birthDate: yup
+    .date()
+    .typeError('Data de nascimento é obrigatorio')
+    .required('Data de nascimento é obrigatório'),
 
   password: yup.string().required('Senha é obrigatória'),
   confirmPassword: yup

@@ -6,29 +6,44 @@ import GameItem from 'components/UI/molecules/GameItem';
 
 import { Box, Stack } from '@chakra-ui/react';
 
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 
 interface IGameListProps {
   title: string;
-  games?: IGame[];
-  gameBanner?: IGame;
+  games?: IStoreProduct[];
+  gameBanner?: IStoreProduct;
 }
 
 export default function GameList({ title, games, gameBanner }: IGameListProps) {
   const hasGames = useMemo(() => games && games.length > 0, [games]);
   const firstFourGames = useMemo(() => {
-    return games?.slice(0, 4);
+    if (!games) return [];
+    const randomNumber = [];
+    const randomGames = Array.from(Array(4).keys());
+
+    return randomGames.map(() => {
+      let randomIndex = Math.floor(Math.random() * games.length);
+
+      if (randomNumber.includes(randomIndex)) {
+        randomIndex = Math.floor(Math.random() * games.length);
+      }
+
+      randomNumber.push(randomIndex);
+      return games[randomIndex];
+    });
   }, [games]);
 
   return (
     <Box my="12" maxWidth="940px" mx="auto">
       <Title>{title}</Title>
 
-      {gameBanner && <Banner game={gameBanner} />}
+      {gameBanner && <Banner storeProduct={gameBanner} />}
 
       <Stack direction="row" mt="6" spacing="6">
         {hasGames &&
-          firstFourGames?.map(game => <GameItem key={game.id} game={game} />)}
+          firstFourGames?.map(game => (
+            <GameItem key={game.id} storeProduct={game} />
+          ))}
       </Stack>
     </Box>
   );

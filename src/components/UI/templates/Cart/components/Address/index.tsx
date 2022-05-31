@@ -23,11 +23,13 @@ import ModalAddress from 'components/UI/organisms/Modals/ModalAddress';
 
 import { IAddress } from 'types/IAddress';
 
+import { useCart } from 'contexts/cart';
 import AddressCard from './AddressCard';
 
 export default function Address() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { isAuthenticated } = useAuth();
+  const { addShippingAddress } = useCart();
 
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,7 +86,7 @@ export default function Address() {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'addressId',
     defaultValue: get(addresses, '[0].id', ''),
-    onChange: console.log,
+    onChange: addShippingAddress,
   });
 
   const group = getRootProps();

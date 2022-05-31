@@ -1,24 +1,24 @@
 import { Text, Stack } from '@chakra-ui/react';
 
-import useFetch from 'hooks/useFetch';
 import Desktop from 'layout/desktop';
+import useFetch from 'hooks/useFetch';
 
 import Title from 'components/UI/atoms/Title';
+import Loader from 'components/UI/atoms/Loader';
 import AccountItem from 'components/UI/molecules/AccountItem';
 
-import { IOrder } from 'types/IOrder';
+import { ICoupon } from 'types/ICoupon';
 
-import Loader from 'components/UI/atoms/Loader';
-import OrderItem from '../OrderItem';
 import Side from '../Side';
+import CouponCard from './CouponCard';
 
-export default function Orders() {
-  const { loading, response } = useFetch<IOrder[]>({
-    url: 'order',
+export default function Coupons() {
+  const { loading, response } = useFetch<ICoupon[]>({
     isPrivate: true,
+    url: 'exchange-code',
   });
 
-  const hasOrders = response?.length > 0;
+  const hasCoupons = response?.length > 0;
 
   return (
     <Desktop>
@@ -28,21 +28,21 @@ export default function Orders() {
         <Side />
 
         <Stack w="full" spacing="6">
-          <AccountItem title="Meus pedidos">
+          <AccountItem title="Meus cupons">
             {loading && <Loader />}
 
-            {!hasOrders && !loading && (
+            {!hasCoupons && !loading && (
               <Stack>
                 <Text fontSize="sm" color="blackAlpha.500">
-                  Você ainda não possui pedidos.
+                  Você ainda não possui vale troca.
                 </Text>
               </Stack>
             )}
 
-            {hasOrders && !loading && (
-              <Stack spacing="6">
-                {response.map(order => (
-                  <OrderItem key={order.id} order={order} />
+            {hasCoupons && !loading && (
+              <Stack spacing="4">
+                {response.map(coupon => (
+                  <CouponCard key={coupon.id} coupon={coupon} />
                 ))}
               </Stack>
             )}

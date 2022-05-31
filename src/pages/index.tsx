@@ -1,9 +1,9 @@
 import Home from 'components/UI/templates/Home';
 import useFetch from 'hooks/useFetch';
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 
 export default function HomePage() {
-  const games = useFetch<IGame[]>('store-product');
+  const games = useFetch<IStoreProduct[]>({ url: 'store-product' });
 
-  return <Home games={games.data} />;
+  return <Home games={games.response} />;
 }

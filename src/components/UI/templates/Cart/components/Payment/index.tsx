@@ -1,5 +1,4 @@
-import { get } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import api from 'services';
 
@@ -10,8 +9,8 @@ import {
   VStack,
   Button,
   HStack,
-  useRadioGroup,
   useDisclosure,
+  Input,
 } from '@chakra-ui/react';
 import { FaCcVisa, FaPlus } from 'react-icons/fa';
 
@@ -21,13 +20,74 @@ import ModalCard from 'components/UI/organisms/Modals/ModalCard';
 
 import { ICreditCard } from 'types/ICreditCard';
 
-import PaymentCard from './PaymentCard';
+import { useCart } from 'contexts/cart';
+import { PaymentMethodType } from 'contexts/cart/types';
+import PaymentCheckbox from './PaymentCheckbox';
+
+export interface IPaymentMethodData {
+  paymentMethodId: string;
+  price: number;
+}
 
 export default function Payment() {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { addPaymentMethod } = useCart();
 
   const [creditCards, setCreditCards] = useState<ICreditCard[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodType[]>([]);
+
+  const handleAddPaymentMethod = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+
+      let formattedPaymentMethods = [...paymentMethods];
+
+      const hasPaymentMethod = formattedPaymentMethods.some(
+        i => i.paymentMethodId === value,
+      );
+
+      if (hasPaymentMethod) {
+        formattedPaymentMethods = formattedPaymentMethods.filter(
+          i => i.paymentMethodId !== value,
+        );
+      }
+
+      formattedPaymentMethods = [
+        ...formattedPaymentMethods,
+        { paymentMethodId: value, price: 0 },
+      ];
+
+      addPaymentMethod(formattedPaymentMethods);
+      setPaymentMethods(formattedPaymentMethods);
+    },
+    [addPaymentMethod, paymentMethods],
+  );
+
+  const handleAddPrice = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const { value, name } = event.target;
+
+      const formattedName = name.split('.')[0];
+
+      let formattedPaymentMethods = [...paymentMethods];
+
+      formattedPaymentMethods = formattedPaymentMethods.map(paymentMethod => {
+        if (paymentMethod.paymentMethodId === formattedName) {
+          return {
+            ...paymentMethod,
+            price: +value,
+          };
+        }
+
+        return paymentMethod;
+      });
+
+      addPaymentMethod(formattedPaymentMethods);
+      setPaymentMethods(formattedPaymentMethods);
+    },
+    [addPaymentMethod, paymentMethods],
+  );
 
   const hasCreditCards = creditCards.length > 0;
 
@@ -54,14 +114,6 @@ export default function Payment() {
     }));
   }, [creditCards]);
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'creditCardId',
-    defaultValue: get(creditCards, '0.id', ''),
-    onChange: console.log,
-  });
-
-  const group = getRootProps();
-
   return (
     <Box>
       <ModalCard isOpen={isOpen} onClose={onClose} />
@@ -84,13 +136,32 @@ export default function Payment() {
       )}
 
       {hasCreditCards && (
-        <VStack {...group}>
-          {options.map(value => {
-            const radio = getRadioProps({ value: value.value });
+        <VStack>
+          {options.map(({ value, label }) => {
             return (
-              <PaymentCard key={value} {...radio}>
-                {value.label}
-              </PaymentCard>
+              <HStack w="full">
+                <PaymentCheckbox
+                  value={value}
+                  label={label}
+                  onChange={handleAddPaymentMethod}
+                />
+
+                <Input
+                  flex="1"
+                  size="lg"
+                  rounded="2"
+                  fontSize="md"
+                  name={`${value}.price`}
+                  onChange={handleAddPrice}
+                  bgColor="blackAlpha.100"
+                  placeholder="Digite o valor..."
+                  _placeholder={{ color: 'blackAlpha.900' }}
+                  _hover={{ bgColor: 'blackAlpha.200' }}
+                  isDisabled={
+                    !paymentMethods.some(i => i.paymentMethodId === value)
+                  }
+                />
+              </HStack>
             );
           })}
         </VStack>

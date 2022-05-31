@@ -5,7 +5,11 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['cdn.cloudflare.steamstatic.com', 'www.gtplanet.net'],
+    domains: [
+      'cdn.cloudflare.steamstatic.com',
+      'www.gtplanet.net',
+      'localhost',
+    ],
     hostname: 'cdn.cloudflare.steamstatic.com',
   },
 };

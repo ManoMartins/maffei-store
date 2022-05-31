@@ -10,89 +10,209 @@ import MiniCart from 'components/UI/organisms/MiniCart';
 
 import { useDisclosure } from '@chakra-ui/react';
 
-import { IGame } from 'types/IGame';
-import { CartContextProviderProps, CartContextValues, CartData } from './types';
+import api from 'services';
+import { useAuth } from 'contexts/auth';
+
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import {
+  CartContextProviderProps,
+  CartContextValues,
+  CartData,
+  CheckoutData,
+  PaymentMethodType,
+} from './types';
 
 const CartContext = createContext<CartContextValues>({} as CartContextValues);
 
 export function CartContextProvider({ children }: CartContextProviderProps) {
+  const { user } = useAuth();
   const [cart, setCart] = useState<CartData | undefined>(undefined);
+  const [checkout, setCheckout] = useState<CheckoutData | undefined>(undefined);
+
+  const router = useRouter();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  const handleCheckout = useCallback(
+    async (newCart: CartData) => {
+      const response = await api.post<CheckoutData>('/shopping-cart', {
+        userId: user?.id,
+        voucherCode: newCart.voucherCode,
+        storeProducts: newCart.storeProducts,
+      });
+
+      setCheckout(response.data);
+    },
+    [user?.id],
+  );
+
   // Product
   const addProduct = useCallback(
-    (game: IGame) => {
+    async (storeProductId: string) => {
       onOpen();
 
       const oldCart = { ...cart };
 
       const storeProducts = oldCart.storeProducts || [];
 
-      const product = storeProducts.find(p => p.id === game.id);
+      const product = storeProducts.find(
+        p => p.storeProductId === storeProductId,
+      );
 
       if (product) {
         product.quantity += 1;
       } else {
         storeProducts.push({
-          ...game,
+          storeProductId,
           quantity: 1,
         });
       }
 
-      setCart({
+      const newCart = {
         ...oldCart,
         storeProducts,
-      });
+      };
+
+      try {
+        await handleCheckout(newCart);
+        setCart(newCart);
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao adicionar o produto ao carrinho');
+      }
     },
-    [cart, onOpen],
+    [cart, handleCheckout, onOpen],
   );
 
   const removeProduct = useCallback(
-    (productId: string) => {
+    async (productId: string) => {
       const oldCart = { ...cart };
 
       const storeProducts = oldCart.storeProducts || [];
 
-      const product = storeProducts.find(p => p.id === productId);
+      const product = storeProducts.find(p => p.storeProductId === productId);
 
       if (product) {
         storeProducts.splice(storeProducts.indexOf(product), 1);
       }
 
-      setCart({
+      const newCart = {
         ...oldCart,
         storeProducts,
-      });
+      };
+
+      try {
+        await handleCheckout(newCart);
+        setCart(newCart);
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao remover o produto do carrinho');
+      }
     },
-    [cart],
+    [cart, handleCheckout],
   );
 
-  const updateProductQuantity = useCallback((productId: string) => {
-    alert(`Atualizar produto de quantidade ${productId}`);
-  }, []);
+  const updateProductQuantity = useCallback(
+    async (productId: string, quantity: number) => {
+      const oldCart = { ...cart };
+
+      const storeProducts = oldCart.storeProducts || [];
+
+      const product = storeProducts.find(p => p.storeProductId === productId);
+
+      if (!product) return;
+
+      product.quantity = quantity;
+
+      const newCart = {
+        ...oldCart,
+        storeProducts,
+      };
+
+      try {
+        await handleCheckout(newCart);
+        setCart(newCart);
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao atualizar a quantidade do produto no carrinho');
+      }
+    },
+    [cart, handleCheckout],
+  );
 
   // Coupon
-  const addCoupon = useCallback((voucherCode: string) => {
-    alert(`Adicionar produto ${voucherCode}`);
-  }, []);
+  const addPromoCode = useCallback(
+    async (voucherCode: string) => {
+      const oldCart = { ...cart };
 
-  const removeCoupon = useCallback((voucherCode: string) => {
+      const newCart = {
+        ...oldCart,
+        voucherCode,
+      };
+
+      try {
+        await handleCheckout(newCart);
+        setCart(newCart);
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao adicionar o código promocional');
+      }
+    },
+    [cart, handleCheckout],
+  );
+
+  const removePromoCode = useCallback((voucherCode: string) => {
     alert(`Remover produto ${voucherCode}`);
   }, []);
 
   // Payment method
-  const addPaymentMethod = useCallback((paymentMethodId: string) => {
-    alert(`Adicionar produto ${paymentMethodId}`);
+  const addPaymentMethod = useCallback(
+    (paymentMethods: PaymentMethodType[]) => {
+      setCart(oldState => ({
+        ...oldState,
+        payment: paymentMethods,
+      }));
+    },
+    [],
+  );
+
+  const removePaymentMethod = useCallback(() => {
+    setCart(oldState => ({
+      ...oldState,
+      paymentMethodId: undefined,
+    }));
   }, []);
 
-  const removePaymentMethod = useCallback((paymentMethodId: string) => {
-    alert(`Remover produto ${paymentMethodId}`);
+  const addShippingAddress = useCallback((shippingAddressId: string) => {
+    setCart(oldState => ({
+      ...oldState,
+      shippingAddressId,
+    }));
   }, []);
 
-  const makeOrder = useCallback(() => {
-    alert('Fazer pedido');
+  const removeShippingAddress = useCallback(() => {
+    setCart(oldState => ({
+      ...oldState,
+      shippingAddressId: undefined,
+    }));
   }, []);
+
+  const makeOrder = useCallback(async () => {
+    try {
+      await api.post('/order', cart);
+      setCart(undefined);
+      setCheckout(undefined);
+      router.push('/thanks');
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message);
+        return;
+      }
+
+      alert(error);
+    }
+  }, [cart, router]);
 
   const cartLength = useMemo(() => {
     const storeProducts = cart?.storeProducts || [];
@@ -105,15 +225,20 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       cart,
       cartLength,
 
+      checkout,
+
       addProduct,
       removeProduct,
       updateProductQuantity,
 
-      addCoupon,
-      removeCoupon,
+      addPromoCode,
+      removePromoCode,
 
       addPaymentMethod,
       removePaymentMethod,
+
+      addShippingAddress,
+      removeShippingAddress,
 
       makeOrder,
 
@@ -124,26 +249,29 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       },
     }),
     [
+      checkout,
       cart,
+      cartLength,
       addProduct,
       removeProduct,
       updateProductQuantity,
-      addCoupon,
-      removeCoupon,
+      addPromoCode,
+      removePromoCode,
       addPaymentMethod,
       removePaymentMethod,
+      addShippingAddress,
+      removeShippingAddress,
       makeOrder,
       isOpen,
       onOpen,
       onClose,
-      cartLength,
     ],
   );
 
   return (
     <CartContext.Provider value={values}>
       <MiniCart
-        cart={cart}
+        checkout={checkout}
         isOpen={isOpen}
         onClose={onClose}
         onRemoveProduct={removeProduct}

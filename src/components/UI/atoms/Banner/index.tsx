@@ -5,7 +5,7 @@ import { useCart } from 'contexts/cart';
 
 import { Button, Flex, Heading, Text, TextProps } from '@chakra-ui/react';
 
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 
 enum DescriptionEnum {
   left = 'left',
@@ -13,10 +13,10 @@ enum DescriptionEnum {
 }
 
 interface IBannerProps {
-  game: IGame;
+  storeProduct: IStoreProduct;
 }
 
-export default function Banner({ game }: IBannerProps) {
+export default function Banner({ storeProduct }: IBannerProps) {
   const { addProduct } = useCart();
 
   const container = {
@@ -49,16 +49,16 @@ export default function Banner({ game }: IBannerProps) {
   };
 
   const handleAddProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, newGame: IGame) => {
+    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
       event.preventDefault();
 
-      addProduct(newGame);
+      addProduct(productId);
     },
     [addProduct],
   );
 
   return (
-    <Link href={`/games/${game.slug}`}>
+    <Link href={`/games/${storeProduct.slug}`}>
       <a>
         <Flex
           mx="auto"
@@ -69,17 +69,17 @@ export default function Banner({ game }: IBannerProps) {
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
           boxShadow="inset 0 0 1rem 100rem rgba(0, 0, 0, 0.5)"
-          backgroundImage="url(https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg?t=1649774637)"
+          backgroundImage={`url(${storeProduct.imageUri})`}
           padding="8"
           {...container.right}
         >
           <Flex flexDirection="column" width="96" {...content.right}>
             <Heading fontSize="3xl" color="white">
-              {game.name}
+              {storeProduct.name}
             </Heading>
 
-            <Text mt="1" mb="6" {...textAlign.right}>
-              {game.summary}
+            <Text mt="1" mb="6" noOfLines={3} {...textAlign.right}>
+              {storeProduct.summary}
             </Text>
 
             <Button
@@ -88,7 +88,7 @@ export default function Banner({ game }: IBannerProps) {
               bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
               transition="all 0.2s ease-in-out"
               _hover={{ filter: 'brightness(0.9)' }}
-              onClick={e => handleAddProduct(e, game)}
+              onClick={e => handleAddProduct(e, storeProduct.id)}
             >
               Comprar agora
             </Button>

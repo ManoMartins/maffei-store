@@ -12,9 +12,15 @@ import CartItem from './components/CartItem';
 import PromoCode from './components/PromoCode';
 
 export default function Cart() {
-  const { cart } = useCart();
+  const { checkout } = useCart();
 
-  const hasProducts = cart?.storeProducts?.length > 0;
+  const hasProducts = checkout?.storeProducts?.length > 0;
+
+  // const [products, setProducts] = useState([]);
+
+  // useEffect(() => {
+
+  // }, []);
 
   return (
     <Desktop>
@@ -24,8 +30,8 @@ export default function Cart() {
         <Stack w="full" spacing="8">
           <Stack bgColor="whiteAlpha.900" spacing="0.5" borderRadius="2">
             {hasProducts &&
-              cart.storeProducts.map(game => (
-                <CartItem key={game.id} game={game} />
+              checkout.storeProducts.map(storeProduct => (
+                <CartItem key={storeProduct.id} storeProduct={storeProduct} />
               ))}
           </Stack>
 

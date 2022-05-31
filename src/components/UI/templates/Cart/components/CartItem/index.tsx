@@ -2,26 +2,25 @@ import Image from 'next/image';
 import { MouseEvent, useCallback } from 'react';
 
 import { useCart } from 'contexts/cart';
-import { ICartGame } from 'contexts/cart/types';
+import { StoreProductCheckoutData } from 'contexts/cart/types';
 
 import { FiX } from 'react-icons/fi';
 import { Flex, Heading, IconButton, Text } from '@chakra-ui/react';
 
-import formatCurrency from 'helpers/format/currency';
-
+import { FaEthereum } from 'react-icons/fa';
 import Quantity from './Quantity';
 
 interface ICartItemProps {
-  game: ICartGame;
+  storeProduct: StoreProductCheckoutData;
 }
 
-export default function CartItem({ game }: ICartItemProps) {
-  const { removeProduct } = useCart();
+export default function CartItem({ storeProduct }: ICartItemProps) {
+  const { removeProduct, updateProductQuantity } = useCart();
 
   const handleRemoveProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, gameId: string) => {
+    (event: MouseEvent<HTMLButtonElement>, storeProductId: string) => {
       event.preventDefault();
-      removeProduct(gameId);
+      removeProduct(storeProductId);
     },
     [removeProduct],
   );
@@ -39,22 +38,33 @@ export default function CartItem({ game }: ICartItemProps) {
       <Image
         width="217px"
         height="116px"
-        alt={game.name}
+        alt={storeProduct.name}
         objectFit="cover"
-        src="https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg?t=1649774637"
+        src={storeProduct.imageUri}
       />
 
       <Flex py="2" justifyContent="space-between" ml="6" w="full">
         <Flex flexDirection="column" justifyContent="space-between">
-          <Heading w="52" fontSize="xl">
-            {game.name}
+          <Heading w="full" fontSize="xl">
+            {storeProduct.name}
           </Heading>
 
-          <Quantity defaultValue={game.quantity} />
+          <Quantity
+            max={storeProduct.stock}
+            defaultValue={storeProduct.quantity}
+            onChange={e => updateProductQuantity(storeProduct.id, +e)}
+          />
         </Flex>
 
-        <Text alignSelf="end" w="36" fontWeight="bold">
-          {formatCurrency(game.price)}
+        <Text
+          d="flex"
+          alignItems="center"
+          alignSelf="end"
+          w="36"
+          fontWeight="bold"
+        >
+          <FaEthereum />
+          {storeProduct.price}
         </Text>
       </Flex>
 
@@ -69,7 +79,7 @@ export default function CartItem({ game }: ICartItemProps) {
         _hover={{
           bgColor: 'blackAlpha.100',
         }}
-        onClick={e => handleRemoveProduct(e, game.id)}
+        onClick={e => handleRemoveProduct(e, storeProduct.id)}
       />
     </Flex>
   );

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 import MiniCartItem from 'components/UI/molecules/MiniCartItem';
 
-import { CartData } from 'contexts/cart/types';
+import { CheckoutData } from 'contexts/cart/types';
 
 import {
   Stack,
@@ -18,14 +18,14 @@ import {
 } from '@chakra-ui/react';
 
 interface IMiniCartProps {
-  cart?: CartData;
+  checkout?: CheckoutData;
   isOpen: boolean;
   onClose: () => void;
   onRemoveProduct: (productId: string) => void;
 }
 
 export default function MiniCart({
-  cart,
+  checkout,
   isOpen,
   onClose,
   onRemoveProduct,
@@ -46,10 +46,10 @@ export default function MiniCart({
 
         <DrawerBody>
           <Stack spacing="4">
-            {cart?.storeProducts.map(game => (
+            {checkout?.storeProducts.map(storeProduct => (
               <MiniCartItem
-                key={game.id}
-                game={game}
+                key={storeProduct.id}
+                storeProduct={storeProduct}
                 onRemoveProduct={onRemoveProduct}
               />
             ))}

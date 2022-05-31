@@ -1,80 +1,49 @@
+import { useCallback, useEffect, useState } from 'react';
 import { AxiosRequestConfig } from 'axios';
-import { useEffect, useReducer } from 'react';
 import api from 'services';
+import { useAuth } from 'contexts/auth';
 
-enum ActionType {
-  loading = 'loading',
-  fetched = 'fetched',
-  error = 'error',
-}
+type UseFetchProps<T> = {
+  url: string;
+  isPrivate?: boolean;
+  config?: AxiosRequestConfig<T>;
+};
 
-interface State<T> {
-  data?: T;
-  error?: Error;
-  type: ActionType;
-}
+const useFetch = <T extends any>({
+  url,
+  config,
+  isPrivate,
+}: UseFetchProps<T>) => {
+  const { isAuthenticated } = useAuth();
 
-// discriminated union type
-type Action<T> =
-  | { type: 'loading' }
-  | { type: 'fetched'; payload: T }
-  | { type: 'error'; payload: Error };
+  const [response, setResponse] = useState<T | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-function useFetch<T = unknown>(
-  url?: string,
-  options?: AxiosRequestConfig<T>,
-): State<T> {
-  const initialState: State<T> = {
-    error: undefined,
-    data: undefined,
-    type: ActionType.loading,
-  };
+  const fetchData = useCallback(async () => {
+    if (isPrivate && !isAuthenticated) return;
 
-  // Keep state logic separated
-  const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
-    switch (action.type) {
-      case 'loading':
-        return { ...initialState, type: ActionType.loading };
-      case 'fetched':
-        return {
-          ...initialState,
-          data: action.payload,
-          type: ActionType.fetched,
-        };
-      case 'error':
-        return {
-          ...initialState,
-          error: action.payload,
-          type: ActionType.error,
-        };
-      default:
-        return state;
+    setLoading(true);
+    try {
+      const r = await api(url, config);
+
+      const { data } = r;
+
+      setResponse(data);
+    } catch (err: any) {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const [state, dispatch] = useReducer(fetchReducer, initialState);
+  }, [config, isAuthenticated, isPrivate, url]);
 
   useEffect(() => {
-    if (!url) return;
-
-    const fetchData = async () => {
-      dispatch({ type: 'loading' });
-
-      try {
-        const response = await api(url, options);
-
-        const { data } = response;
-
-        dispatch({ type: 'fetched', payload: data });
-      } catch (error) {
-        dispatch({ type: 'error', payload: error as Error });
-      }
-    };
+    if (config) return;
 
     fetchData();
-  }, [url]);
+  }, [config, fetchData]);
 
-  return state;
-}
+  return { response, loading, error, fetchData };
+};
 
 export default useFetch;

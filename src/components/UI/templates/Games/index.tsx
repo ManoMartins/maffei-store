@@ -3,12 +3,12 @@ import { Box, Flex, SimpleGrid, Stack } from '@chakra-ui/react';
 
 import GameItem from 'components/UI/molecules/GameItem';
 import FieldSearch from 'components/UI/atoms/FieldSearch';
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 import GameSkeleton from './GameSkeleton';
 import GameBlank from './GameBlank';
 
 interface IGamesProps {
-  games?: IGame[];
+  games?: IStoreProduct[];
   isLoading: boolean;
 }
 
@@ -29,7 +29,7 @@ export default function Games({ games, isLoading }: IGamesProps) {
             {!hasGames && !isLoading && <GameBlank />}
 
             {hasGames &&
-              games.map(game => <GameItem key={game.id} game={game} />)}
+              games.map(game => <GameItem key={game.id} storeProduct={game} />)}
           </SimpleGrid>
         </Stack>
       </Flex>

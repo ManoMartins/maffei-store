@@ -7,10 +7,11 @@ import {
   WrapItem,
   WrapItemProps,
 } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface IDetailsProps {
   title: string;
-  label: string;
+  label: string | ReactNode;
 
   labelProps?: TextProps;
   titleProps?: HeadingProps;

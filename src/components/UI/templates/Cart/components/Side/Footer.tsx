@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useCart } from 'contexts/cart';
@@ -11,6 +11,8 @@ export default function Footer() {
 
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleKeepShopping = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
@@ -19,11 +21,15 @@ export default function Footer() {
     [router],
   );
 
-  const handleOrder = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    makeOrder();
-    router.push('/thanks');
-  }, []);
+  const handleOrder = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setIsLoading(true);
+      await makeOrder();
+      setIsLoading(false);
+    },
+    [makeOrder],
+  );
 
   return (
     <Box bgColor="whiteAlpha.900" px="6" py="4">
@@ -46,6 +52,7 @@ export default function Footer() {
         <Button
           size="sm"
           borderRadius="2"
+          isLoading={isLoading}
           transition="all 0.2s ease-in-out"
           _hover={{ filter: 'brightness(0.9)' }}
           bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"

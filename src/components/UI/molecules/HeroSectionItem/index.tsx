@@ -4,20 +4,22 @@ import { useCart } from 'contexts/cart';
 
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 
 interface IHeroSectionItemProps {
-  game: IGame;
+  storeProduct: IStoreProduct;
 }
 
-export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
+export default function HeroSectionItem({
+  storeProduct,
+}: IHeroSectionItemProps) {
   const { addProduct } = useCart();
 
   const handleAddProduct = useCallback(
-    (event: MouseEvent<HTMLButtonElement>, newGame: IGame) => {
+    (event: MouseEvent<HTMLButtonElement>, productId: string) => {
       event.preventDefault();
 
-      addProduct(newGame);
+      addProduct(productId);
     },
     [addProduct],
   );
@@ -34,7 +36,7 @@ export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
       backgroundPosition="center"
       backgroundRepeat="no-repeat"
       boxShadow="inset 0px -222px 50px rgba(0, 0, 0, 0.8)"
-      backgroundImage="url(https://i.ytimg.com/vi/AI9zBBTyX-E/maxresdefault.jpg)"
+      backgroundImage={`url(${storeProduct.imageUri})`}
     >
       <Flex
         justifyContent="space-around"
@@ -45,9 +47,11 @@ export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
         pb="10"
       >
         <Box>
-          <Heading>{game.name}</Heading>
+          <Heading>{storeProduct.name}</Heading>
 
-          <Text mt="2">{game.summary}</Text>
+          <Text mt="2" noOfLines={2}>
+            {storeProduct.summary}
+          </Text>
         </Box>
 
         <Box>
@@ -57,7 +61,7 @@ export default function HeroSectionItem({ game }: IHeroSectionItemProps) {
             bgGradient="linear(to-r, #9146FF 0%, #9E5CFF 50%, #AB72FF 100%)"
             transition="all 0.2s ease-in-out"
             _hover={{ filter: 'brightness(0.9)' }}
-            onClick={e => handleAddProduct(e, game)}
+            onClick={e => handleAddProduct(e, storeProduct.id)}
           >
             Comprar agora
           </Button>

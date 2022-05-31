@@ -2,20 +2,27 @@ import HeroSection from 'components/UI/organisms/HeroSection';
 import GameList from 'components/UI/organisms/GameList';
 import Desktop from 'layout/desktop';
 
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
+import { useMemo } from 'react';
 
 interface IHomeProps {
-  games?: IGame[];
+  games?: IStoreProduct[];
 }
 
 export default function Home({ games }: IHomeProps) {
+  const randomIndex = useMemo(() => {
+    if (!games) return 0;
+
+    return Math.floor(Math.random() * games.length);
+  }, [games]);
+
   return (
     <Desktop>
-      <HeroSection games={games} />
+      <HeroSection storeProducts={games} />
 
       <GameList
         title="Lançamentos"
-        gameBanner={games && games[0]}
+        gameBanner={games && games[randomIndex]}
         games={games}
       />
     </Desktop>

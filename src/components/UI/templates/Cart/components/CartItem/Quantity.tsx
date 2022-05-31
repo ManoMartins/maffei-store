@@ -20,7 +20,7 @@ export default function Quantity({ ...rest }: QuantityProps) {
           Quantidade
         </Text>
 
-        <NumberInput ml="2" w="14" size="xs" variant="filled" {...rest}>
+        <NumberInput ml="2" w="16" min={1} size="xs" variant="filled" {...rest}>
           <NumberInputField
             borderRadius="2"
             borderColor="blackAlpha.100"

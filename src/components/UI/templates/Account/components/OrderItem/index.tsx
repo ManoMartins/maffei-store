@@ -1,9 +1,17 @@
-import { Box, Divider, Flex, Stack } from '@chakra-ui/react';
+import { Box, Divider, Flex, HStack, Stack, Text } from '@chakra-ui/react';
 import DetailItem from 'components/UI/molecules/DetailItem';
+import { format } from 'date-fns';
+import { IOrder } from 'types/IOrder';
+import ptBR from 'date-fns/locale/pt-BR';
+import { FaEthereum } from 'react-icons/fa';
 import OrderActions from '../OrderActions';
 import OrderInfos from '../OrderInfos';
 
-export default function OrderItem() {
+interface IOrderItem {
+  order: IOrder;
+}
+
+export default function OrderItem({ order }: IOrderItem) {
   return (
     <Box
       as="section"
@@ -22,14 +30,25 @@ export default function OrderItem() {
       >
         <DetailItem
           title="Pedido realizado"
-          label="24 abril de 2022"
+          label={format(
+            new Date(order.createdAt),
+            "'Dia' dd 'de' MMMM' de 'yyyy'",
+            {
+              locale: ptBR,
+            },
+          )}
           wrapItemProps={{ width: 'auto' }}
           labelProps={{ color: 'blackAlpha.900' }}
           titleProps={{ color: 'blackAlpha.900' }}
         />
         <DetailItem
           title="Total"
-          label="R$ 129,99"
+          label={
+            <HStack spacing="1">
+              <FaEthereum size="14" />
+              <Text>{order.totalPrice}</Text>
+            </HStack>
+          }
           wrapItemProps={{ width: 'auto' }}
           labelProps={{ color: 'blackAlpha.900' }}
           titleProps={{ color: 'blackAlpha.900' }}
@@ -50,11 +69,15 @@ export default function OrderItem() {
           spacing="5"
           divider={<Divider borderColor="blackAlpha.400" />}
         >
-          <OrderInfos />
-          <OrderInfos />
+          {order.storeProducts.map(orderOnStoreProducts => (
+            <OrderInfos orderOnStoreProducts={orderOnStoreProducts} />
+          ))}
         </Stack>
 
-        <OrderActions />
+        <OrderActions
+          orderId={order.id}
+          orderOnStoreProducts={order.storeProducts}
+        />
       </Flex>
     </Box>
   );

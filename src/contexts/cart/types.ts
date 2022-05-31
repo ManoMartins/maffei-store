@@ -1,36 +1,53 @@
 import React from 'react';
-import { IGame } from 'types/IGame';
+import { IStoreProduct } from 'types/IStoreProduct';
 
-export interface ICartGame extends IGame {
+export interface ICartGame {
   quantity: number;
+  storeProductId: string;
 }
 
 export type CartData = {
   storeProducts: Array<ICartGame> | null;
+  voucherCode: string;
+  paymentMethodId: string;
+  shippingAddressId: string;
+};
 
-  storeCoupons: Array<{
-    voucherCode: string;
-  }> | null;
+export type StoreProductCheckoutData = IStoreProduct & {
+  quantity: number;
+};
 
-  storePaymentMethods: Array<{
-    paymentMethodId: string;
-  }> | null;
+export type CheckoutData = {
+  id: string;
+  priceTotal: number;
+  priceDiscount?: number;
+  totalWithoutDiscount: number;
+  storeProducts: Array<StoreProductCheckoutData>;
+};
+
+export type PaymentMethodType = {
+  paymentMethodId: string;
+  price: number;
 };
 
 export type CartContextValues = {
   cart: CartData | undefined;
+  checkout: CheckoutData | undefined;
   cartLength: number;
-  addProduct: (game: IGame) => void;
+  addProduct: (productId: string) => void;
   removeProduct: (productId: string) => void;
   updateProductQuantity: (productId: string, quantity: number) => void;
 
-  addCoupon: (voucherCode: string) => void;
-  removeCoupon: (voucherCode: string) => void;
+  addPromoCode: (voucherCode: string) => Promise<void>;
+  removePromoCode: (voucherCode: string) => void;
 
-  addPaymentMethod: (paymentMethodId: string) => void;
+  addPaymentMethod: (paymentMethodId: PaymentMethodType[]) => void;
   removePaymentMethod: (paymentMethodId: string) => void;
 
-  makeOrder: () => void;
+  addShippingAddress: (shippingAddressId: string) => void;
+  removeShippingAddress: (shippingAddressId: string) => void;
+
+  makeOrder: () => Promise<void>;
 
   disclosureMiniCart: {
     isOpen: boolean;
