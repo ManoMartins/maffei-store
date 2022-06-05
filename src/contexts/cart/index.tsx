@@ -20,6 +20,7 @@ import {
   CartContextValues,
   CartData,
   CheckoutData,
+  IOrderAPI,
   PaymentMethodType,
 } from './types';
 
@@ -200,10 +201,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
   const makeOrder = useCallback(async () => {
     try {
-      await api.post('/order', cart);
+      const response = await api.post<IOrderAPI>('/order', cart);
       setCart(undefined);
       setCheckout(undefined);
-      router.push('/thanks');
+
+      const voucherCode = response.data?.exchangeCode?.voucherCode;
+
+      if (voucherCode) {
+        await router.push(`/thanks?voucherCode=${voucherCode}`);
+      }
+
+      await router.push(`/thanks`);
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message);

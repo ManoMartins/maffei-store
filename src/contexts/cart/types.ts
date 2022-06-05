@@ -59,3 +59,32 @@ export type CartContextValues = {
 export type CartContextProviderProps = {
   children: React.ReactNode;
 };
+
+export interface IOrder {
+  id: string;
+  userId: string;
+  paymentStatus: string;
+  shippingAddressId: string;
+  billingAddressId: string;
+  totalPrice: number;
+  promotionalCodeId: any;
+  exchangeCodeId?: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IExchangeCode {
+  id: string;
+  voucherCode: string;
+  discountPrice: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+}
+
+export interface IOrderAPI {
+  order: IOrder;
+  exchangeCode?: IExchangeCode;
+}
