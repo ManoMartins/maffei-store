@@ -6,12 +6,15 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { FaEthereum } from 'react-icons/fa';
 import OrderActions from '../OrderActions';
 import OrderInfos from '../OrderInfos';
+import { useAuth } from 'contexts/auth';
 
 interface IOrderItem {
   order: IOrder;
 }
 
 export default function OrderItem({ order }: IOrderItem) {
+  const { user } = useAuth()
+
   return (
     <Box
       as="section"
@@ -55,7 +58,7 @@ export default function OrderItem({ order }: IOrderItem) {
         />
         <DetailItem
           title="Enviado para"
-          label="Manoel Carlos"
+          label={user.name}
           wrapItemProps={{ width: 'auto' }}
           labelProps={{ color: 'blackAlpha.900' }}
           titleProps={{ color: 'blackAlpha.900' }}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import api from 'services';
 
@@ -26,10 +26,9 @@ export default function Cards() {
 
   const hasCreditCards = creditCards.length > 0;
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
+  const getCreditCart = useCallback(() => {
     setIsLoading(true);
+
     api
       .get<ICreditCard[]>('/credit-card')
       .then(response => {
@@ -38,11 +37,17 @@ export default function Cards() {
       .finally(() => {
         setIsLoading(false);
       });
+  }, [])
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    getCreditCart();
   }, [isAuthenticated]);
 
   return (
     <Desktop>
-      <ModalCard isOpen={isOpen} onClose={onClose} />
+      <ModalCard isOpen={isOpen} onClose={onClose} reload={getCreditCart} />
 
       <Title>Minha conta</Title>
 
@@ -67,7 +72,7 @@ export default function Cards() {
 
               {hasCreditCards &&
                 creditCards.map(creditCard => (
-                  <CardItem key={creditCard.id} creditCard={creditCard} />
+                  <CardItem key={creditCard.id} reload={getCreditCart} creditCard={creditCard} />
                 ))}
             </Stack>
           </AccountItem>

@@ -23,12 +23,14 @@ export interface IFieldSelectProps extends SelectProps {
 const FieldSelectBase: ForwardRefRenderFunction<
   HTMLSelectElement,
   IFieldSelectProps
-> = ({ label, error, options, formControlProps, ...rest }, ref) => {
+> = ({ label, error, options, formControlProps, name, ...rest }, ref) => {
   return (
     <FormControl isInvalid={!!error} {...formControlProps}>
       {label && <FormLabel>{label}</FormLabel>}
 
       <Select
+        id={name}
+        name={name}
         variant="filled"
         borderRadius="2"
         bgColor="blackAlpha.100"

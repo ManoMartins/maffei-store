@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import api from 'services';
 
@@ -36,18 +36,22 @@ export default function Address() {
 
   const hasAddresses = addresses.length > 0;
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
+  const getAddresses = useCallback(() => {
     setIsLoading(true);
     api
-      .get('/address')
+      .get<IAddress[]>('/address')
       .then(response => {
         setAddresses(response.data);
       })
       .finally(() => {
         setIsLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    getAddresses()
   }, [isAuthenticated]);
 
   const options = useMemo(() => {
@@ -93,7 +97,7 @@ export default function Address() {
 
   return (
     <Box>
-      <ModalAddress isOpen={isOpen} onClose={onClose} />
+      <ModalAddress isOpen={isOpen} onClose={onClose} reload={getAddresses} />
 
       <Title stackProps={{ mb: '2' }} placement="bottom" fontSize="lg">
         Endereços
@@ -117,6 +121,7 @@ export default function Address() {
         <VStack {...group}>
           {options.map(value => {
             const radio = getRadioProps({ value: value.value });
+
             return (
               <AddressCard key={value} {...radio}>
                 {value.label}

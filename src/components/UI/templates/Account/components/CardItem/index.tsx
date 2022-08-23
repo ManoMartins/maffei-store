@@ -12,26 +12,48 @@ import {
   ButtonGroup,
   useDisclosure,
 } from '@chakra-ui/react';
-import { FaCcMastercard } from 'react-icons/fa';
+import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 
-import { ICreditCard } from 'types/ICreditCard';
+import { EnumCardBrand, ICreditCard } from 'types/ICreditCard';
+import { FiCreditCard } from 'react-icons/fi';
 
 interface ICreditCardItemProps {
+  reload: () => void;
   creditCard: ICreditCard;
 }
 
-export default function CardItem({ creditCard }: ICreditCardItemProps) {
+export default function CardItem({ reload, creditCard }: ICreditCardItemProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const CardBrandIcon = useMemo(() => {
+    if (creditCard.cardBrand === 'VISA') {
+      return FaCcVisa
+    }
+
+    if (creditCard.cardBrand === 'MASTERCARD') {
+      return FaCcMastercard
+    }
+
+    return FiCreditCard
+  }, [])
 
   const [isDeleting, setIsDeleting] = useState(false);
 
   const sanitizeCreditCard = useMemo(() => {
-    const { id, cardCvv, cardExpiry, cardHolder, cardNumber, documentNumber } =
-      creditCard;
+    const { 
+      id, 
+      cardCvv, 
+      cardBrand, 
+      cardExpiry, 
+      cardHolder, 
+      cardNumber, 
+      documentNumber 
+    } = creditCard;
 
     return {
       id,
       cardCvv,
+      cardBrand,
       cardExpiry,
       cardHolder,
       cardNumber,
@@ -39,10 +61,11 @@ export default function CardItem({ creditCard }: ICreditCardItemProps) {
     };
   }, [creditCard]);
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = useCallback(async () => {
     try {
       setIsDeleting(true);
-      api.delete(`/credit-card/${creditCard.id}`);
+      await api.delete(`/credit-card/${creditCard.id}`);
+      reload();
     } catch (error) {
       console.error(error);
 
@@ -57,11 +80,12 @@ export default function CardItem({ creditCard }: ICreditCardItemProps) {
       <ModalCard
         isOpen={isOpen}
         onClose={onClose}
+        reload={reload}
         defaultValues={sanitizeCreditCard}
       />
 
       <HStack color="blackAlpha.900">
-        <FaCcMastercard size="24" />
+        <CardBrandIcon size="24" />
         <Text>**** **** **** {creditCard.cardNumber.slice(12, 16)}</Text>
       </HStack>
 

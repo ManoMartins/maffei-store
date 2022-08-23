@@ -1,3 +1,8 @@
+export enum EnumCardBrand {
+  VISA = 'VISA',
+  MASTERCARD = 'MASTERCARD'
+}
+
 export interface ICreditCard {
   id?: string;
   documentNumber: string;
@@ -5,4 +10,5 @@ export interface ICreditCard {
   cardNumber: string;
   cardExpiry: string;
   cardCvv: string;
+  cardBrand: EnumCardBrand | null;
 }

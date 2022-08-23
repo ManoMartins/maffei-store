@@ -25,6 +25,8 @@ const FieldInputBase: ForwardRefRenderFunction<
       {label && <FormLabel>{label}</FormLabel>}
 
       <Input
+        id={rest.name}
+        name={rest.name}
         variant="filled"
         borderRadius="2"
         bgColor="blackAlpha.100"

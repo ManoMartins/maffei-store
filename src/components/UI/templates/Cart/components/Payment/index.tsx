@@ -137,7 +137,7 @@ export default function Payment() {
 
       {hasCreditCards && (
         <VStack>
-          {options.map(({ value, label }) => {
+          {options.map(({ value, label }, index) => {
             return (
               <HStack w="full">
                 <PaymentCheckbox
@@ -147,6 +147,7 @@ export default function Payment() {
                 />
 
                 <Input
+                  data-testid={`payment-price-${index}`}
                   flex="1"
                   size="lg"
                   rounded="2"

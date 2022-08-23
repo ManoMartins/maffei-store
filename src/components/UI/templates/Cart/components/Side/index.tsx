@@ -45,10 +45,12 @@ export default function Side() {
           justifyContent="space-between"
         >
           <Text>Total</Text>
-          <Text d="flex" alignItems="center" color="primary.900">
+          <Flex alignItems="center" color="primary.900">
             <FaEthereum />
-            {checkout?.priceTotal || 0}
-          </Text>
+            <Text data-testid="priceTotal">
+              {checkout?.priceTotal || 0}
+            </Text>
+          </Flex>
         </Flex>
       </Stack>
 

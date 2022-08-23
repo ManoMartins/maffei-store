@@ -14,22 +14,35 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "sourceMap": true,
     "jsx": "preserve",
     "baseUrl": "./src",
     "paths": {
-      "types/*": ["types/*"],
-      "components/*": ["components/*"],
-      "context/*": ["context/*"]
+      "types/*": [
+        "types/*"
+      ],
+      "components/*": [
+        "components/*"
+      ],
+      "context/*": [
+        "context/*"
+      ],
+      "types": [
+        "cypress",
+        "@testing-library/cypress"
+      ]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "cypress/support/commands.js",
+    "cypress/support/index.js",
+    "cypress/plugins/index.js"
   ],
   "exclude": [
     "node_modules"

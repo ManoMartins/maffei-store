@@ -19,9 +19,10 @@ import { IAddress } from 'types/IAddress';
 
 interface IAddressItemProps {
   address: IAddress;
+  reload: () => void;
 }
 
-export default function AddressItem({ address }: IAddressItemProps) {
+export default function AddressItem({ address, reload }: IAddressItemProps) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -56,6 +57,7 @@ export default function AddressItem({ address }: IAddressItemProps) {
     try {
       setIsDeleting(true);
       await api.delete(`/address/${address.id}`);
+      reload();
     } catch (error) {
       console.error(error);
 
@@ -69,6 +71,7 @@ export default function AddressItem({ address }: IAddressItemProps) {
     <Flex justifyContent="space-between">
       <ModalAddress
         isOpen={isOpen}
+        reload={reload}
         onClose={onClose}
         defaultValues={sanitizeAddress}
       />

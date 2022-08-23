@@ -193,16 +193,19 @@ export default function ModalExchangeOrder({
           <Button rounded="2" variant="outline" mr={3} onClick={handleClose}>
             Fechar
           </Button>
-          <Button
-            rounded="2"
-            bg="primary.900"
-            _active={{ filter: 'brightness(1)' }}
-            _hover={{ filter: 'brightness(0.85)' }}
-            isLoading={isLoading}
-            onClick={handleExchangeOrder}
-          >
-            Solicitar troca
-          </Button>
+
+          {!response && (
+            <Button
+              rounded="2"
+              bg="primary.900"
+              isLoading={isLoading}
+              onClick={handleExchangeOrder}
+              _active={{ filter: 'brightness(1)' }}
+              _hover={{ filter: 'brightness(0.85)' }}
+            >
+              Solicitar troca
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

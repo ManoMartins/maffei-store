@@ -37,12 +37,14 @@ interface IFormAddress {
 
 interface IModalAddressProps {
   isOpen: boolean;
+  reload: () => void;
   onClose: () => void;
   defaultValues?: IFormAddress & { id: string };
 }
 
 export default function ModalAddress({
   isOpen,
+  reload,
   onClose,
   defaultValues,
 }: IModalAddressProps) {
@@ -105,6 +107,7 @@ export default function ModalAddress({
         status: 'success',
       });
 
+      reload();
       onClose();
     } catch (error) {
       toast({

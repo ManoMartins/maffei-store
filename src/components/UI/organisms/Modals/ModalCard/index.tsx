@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -31,18 +31,21 @@ interface IFormCreditCard {
 }
 interface IModalCardProps {
   isOpen: boolean;
+  reload: () => void;
   onClose: () => void;
   defaultValues?: ICreditCard;
 }
 
 export default function ModalCard({
   isOpen,
+  reload,
   onClose,
   defaultValues,
 }: IModalCardProps) {
   const toast = useToast();
 
   const {
+    watch,
     reset,
     control,
     register,
@@ -60,13 +63,28 @@ export default function ModalCard({
 
   const onSubmit: SubmitHandler<IFormCreditCard> = async data => {
     try {
+      let cardBrand: string | undefined;
+
+      const isVisa = data.cardNumber.match(/^4[0-9]{12}(?:[0-9]{3})/)
+      const isMasterCard = data.cardNumber.match(/^5[1-5][0-9]{14}/)
+      
+      if (isVisa) {
+        cardBrand = 'VISA'
+      } 
+
+      if (isMasterCard) {
+        cardBrand = 'MASTERCARD'
+      } 
+
       if (defaultValues) {
+
         await api.put(`/credit-card/${defaultValues.id}`, {
           ...data,
+          cardBrand,
           id: undefined,
         });
       } else {
-        await api.post('/credit-card', data);
+          await api.post('/credit-card', { ...data, cardBrand });
       }
 
       toast({
@@ -74,6 +92,9 @@ export default function ModalCard({
         description: 'Cartão cadastrado com sucesso',
         status: 'success',
       });
+
+      reload();
+      onClose();
     } catch (error) {
       console.error(error);
 

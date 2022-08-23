@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import api from 'services';
 
@@ -25,8 +25,7 @@ export default function Addresses() {
 
   const hasAddresses = addresses.length > 0;
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
+  const getAddresses = useCallback(() => {
     setIsLoading(true);
     api
       .get<IAddress[]>('/address')
@@ -36,11 +35,16 @@ export default function Addresses() {
       .finally(() => {
         setIsLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    getAddresses();
   }, [isAuthenticated]);
 
   return (
     <Desktop>
-      <ModalAddress isOpen={isOpen} onClose={onClose} />
+      <ModalAddress isOpen={isOpen} onClose={onClose} reload={getAddresses} />
 
       <Title>Minha conta</Title>
 
@@ -65,7 +69,7 @@ export default function Addresses() {
 
               {hasAddresses &&
                 addresses.map(address => (
-                  <AddressItem key={address.id} address={address} />
+                  <AddressItem key={address.id} address={address} reload={getAddresses} />
                 ))}
             </Stack>
           </AccountItem>

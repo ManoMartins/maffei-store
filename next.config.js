@@ -9,6 +9,7 @@ const nextConfig = {
       'cdn.cloudflare.steamstatic.com',
       'www.gtplanet.net',
       'localhost',
+      '192.168.137.232',
     ],
     hostname: 'cdn.cloudflare.steamstatic.com',
   },

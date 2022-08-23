@@ -9,6 +9,7 @@
         "plugin:import/errors",
         "plugin:import/warnings",
         "plugin:import/typescript",
+        "plugin:cypress/recommended",
         "plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
@@ -23,8 +24,9 @@
         "react",
         "@typescript-eslint",
         "prettier",
-        "react-hooks"
-    ],
+        "react-hooks",
+        "cypress"
+],
     "rules": {
         "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
         "react/react-in-jsx-scope": "off",
@@ -48,7 +50,13 @@
         "@typescript-eslint/no-shadow": ["error"],
         "no-unused-vars": "off",
         "react/function-component-definition": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": "error",
+        "cypress/no-assigning-return-values": "error",
+        "cypress/no-unnecessary-waiting": "error",
+        "cypress/assertion-before-screenshot": "warn",
+        "cypress/no-force": "warn",
+        "cypress/no-async-tests": "error",
+        "cypress/no-pause": "error"
     },
     "settings": {
         "import/resolver": {
